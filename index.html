@@ -1,1969 +1,1341 @@
 <!DOCTYPE html>
-<html lang="fr" dir="ltr">
-
+<html lang="en" class="h-full">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>YAS! Timetable</title>
-
-<style>
-
-/* =========================================================
-   YAS! TIMETABLE
-   OFFLINE VERSION - UPDATED
-   ========================================================= */
-
-:root {
-    --bg: #f7f5fb;
-    --card: #ffffff;
-    --text: #39364a;
-    --muted: #858296;
-    --border: #e9e5f0;
-    --primary: #9178c3;
-    --primary-dark: #755ca8;
-    --danger: #cf777f;
-    --soft: #f1edfa;
-    --shadow: 0 12px 34px rgba(71, 57, 102, .08);
-    --mint: #e6f3ed;
-    --peach: #fff0e8;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-html,
-body,
-button,
-input,
-select,
-textarea {
-    font-family:
-        "Cabin",
-        "Poppins",
-        "Noto Sans Arabic",
-        "Segoe UI",
-        Tahoma,
-        Arial,
-        sans-serif;
-}
-
-body {
-    margin: 0;
-    background:
-        radial-gradient(ellipse at 4% 0%, rgba(221, 211, 246, .42), transparent 28rem),
-        radial-gradient(ellipse at 98% 16%, rgba(221, 242, 232, .5), transparent 27rem),
-        var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-}
-
-/* =========================================================
-   HEADER
-   ========================================================= */
-
-header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(255,255,255,.88);
-    border-bottom: 1px solid rgba(233,229,240,.8);
-    backdrop-filter: blur(16px);
-}
-
-.header-inner {
-    width: min(1500px,95%);
-    margin: auto;
-    padding: 16px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
-}
-
-.logo {
-    font-size: 25px;
-    font-weight: 800;
-    color: var(--primary-dark);
-    letter-spacing: -.06em;
-}
-
-.logo span {
-    color: #c68fb0;
-}
-
-.header-actions {
-    display: flex;
-    gap: 7px;
-    flex-wrap: wrap;
-}
-
-/* =========================================================
-   BUTTONS
-   ========================================================= */
-
-button {
-    border: 0;
-    cursor: pointer;
-}
-
-.btn {
-    padding: 10px 14px;
-    border-radius: 13px;
-    background: var(--soft);
-    color: var(--text);
-    font-weight: 650;
-    transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 7px 16px rgba(71,57,102,.12);
-}
-
-.btn.primary {
-    background: linear-gradient(135deg, #a18bd1, #8870bc);
-    color: white;
-}
-
-.btn.primary:hover {
-    background: var(--primary-dark);
-}
-
-.btn.danger {
-    background: #fbe9e9;
-    color: #9c515b;
-}
-
-/* =========================================================
-   MAIN
-   ========================================================= */
-
-.container {
-    width: min(1500px,95%);
-    margin: 32px auto 60px;
-}
-
-.panel {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 23px;
-    padding: 23px;
-    margin-bottom: 20px;
-    box-shadow: var(--shadow);
-    transition: box-shadow .2s ease, transform .2s ease;
-}
-
-.panel-title {
-    font-size: 17px;
-    font-weight: 750;
-    margin-bottom: 18px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-}
-
-/* =========================================================
-   FORMS
-   ========================================================= */
-
-.settings-grid {
-    display: grid;
-    grid-template-columns:
-        repeat(auto-fit,minmax(190px,1fr));
-    gap: 14px;
-}
-
-.field {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.field label {
-    color: var(--muted);
-    font-size: 13px;
-    font-weight: 650;
-}
-
-.field input,
-.field select,
-.field textarea {
-    border: 1px solid var(--border);
-    background: #fdfcff;
-    border-radius: 12px;
-    padding: 11px 12px;
-    outline: none;
-    color: var(--text);
-    transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
-}
-
-.field textarea {
-    resize: vertical;
-    min-height: 80px;
-}
-
-.field input:focus,
-.field select:focus,
-.field textarea:focus {
-    border-color: var(--primary);
-    background: #fff;
-    box-shadow: 0 0 0 4px rgba(145,120,195,.12);
-}
-
-.custom-days-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-    gap: 8px;
-    margin-top: 4px;
-    padding: 10px;
-    border: 1px solid var(--border);
-    border-radius: 11px;
-    background: #fcfbfd;
-}
-
-.custom-day-label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    cursor: pointer;
-    color: var(--text);
-}
-
-/* =========================================================
-   SUBJECT COLORS
-   ========================================================= */
-
-.subject-list {
-    display: grid;
-    grid-template-columns:
-        repeat(auto-fill,minmax(190px,1fr));
-    gap: 9px;
-}
-
-.subject-item {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    padding: 9px;
-    background: #fcfbfe;
-    border: 1px solid var(--border);
-    border-radius: 11px;
-    cursor: pointer;
-    transition: .15s;
-}
-
-.subject-item:hover {
-    background: #f6f2fb;
-    transform: scale(1.02);
-}
-
-.color-circle {
-    width: 30px;
-    height: 30px;
-    border: 0;
-    padding: 0;
-    border-radius: 50%;
-    pointer-events: none; /* Let the parent click handle edit */
-}
-
-/* =========================================================
-   TIMETABLE
-   ========================================================= */
-
-.table-wrapper {
-    width: 100%;
-    overflow: auto;
-    border: 1px solid var(--border);
-    border-radius: 17px;
-    background: #fff;
-}
-
-.timetable {
-    border-collapse: collapse;
-    width: 100%;
-    min-width: 900px;
-    table-layout: fixed;
-}
-
-.timetable th,
-.timetable td {
-    border: 1px solid var(--border);
-}
-
-.timetable th {
-    background: #f2eef9;
-    padding: 14px 8px;
-    font-size: 14px;
-    text-align: center;
-    color: #635b78;
-    font-weight: 750;
-}
-
-.time-cell {
-    width: 95px;
-    min-width: 95px;
-    text-align: center;
-    background: #faf9fd;
-    color: var(--muted);
-    font-size: 12px;
-    padding: 5px;
-}
-
-.day-cell {
-    height: 68px;
-    padding: 5px;
-    vertical-align: top;
-}
-
-.empty-cell {
-    background: white;
-    cursor: pointer;
-}
-
-.empty-cell:hover {
-    background: #f5f1fc;
-}
-
-.deleted-time {
-    background:
-        repeating-linear-gradient(
-            45deg,
-            #f8f5fa,
-            #f8f5fa 8px,
-            #f0ebf5 8px,
-            #f0ebf5 16px
-        );
-}
-
-/* =========================================================
-   LESSON
-   ========================================================= */
-
-.lesson {
-    width: 100%;
-    height: 100%;
-    min-height: 54px;
-    border-radius: 13px;
-    padding: 8px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    cursor: pointer;
-    overflow: hidden;
-    transition: transform .18s ease, box-shadow .18s ease;
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,.42);
-}
-
-.lesson:hover {
-    transform: scale(1.01);
-    box-shadow: 0 7px 18px rgba(65,50,82,.15);
-}
-
-.lesson-name {
-    font-weight: 800;
-    font-size: 14px;
-}
-
-.lesson-time {
-    font-size: 10px;
-    margin-top: 3px;
-    opacity: .75;
-}
-
-.lesson-info {
-    font-size: 10px;
-    margin-top: 3px;
-    opacity: .78;
-}
-
-.lesson-long {
-    min-height: 120px;
-}
-
-/* =========================================================
-   DELETED PERIODS
-   ========================================================= */
-
-.deleted-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 7px;
-}
-
-.deleted-item {
-    background: #f6e3e3;
-    color: #945b5b;
-    padding: 7px 10px;
-    border-radius: 10px;
-    font-size: 13px;
-}
-
-.skipped-item {
-    background: var(--mint);
-    color: #477361;
-    padding: 7px 10px;
-    border-radius: 10px;
-    font-size: 13px;
-}
-
-.skipped-item button {
-    background: transparent;
-    color: inherit;
-    font-weight: bold;
-    margin-left: 5px;
-    cursor: pointer;
-}
-
-.deleted-item button {
-    background: transparent;
-    color: inherit;
-    font-weight: bold;
-    margin-left: 5px;
-    cursor: pointer;
-}
-
-/* =========================================================
-   MODAL
-   ========================================================= */
-
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 500;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    background: rgba(40,30,45,.38);
-    padding: 18px;
-}
-
-.modal-overlay.show {
-    display: flex;
-}
-
-.modal {
-    width: min(650px,100%);
-    max-height: 92vh;
-    overflow-y: auto;
-    background: white;
-    border: 1px solid rgba(233,229,240,.9);
-    border-radius: 25px;
-    padding: 26px;
-    box-shadow: 0 24px 70px rgba(49,39,69,.2);
-}
-
-.modal h2 {
-    margin-top: 0;
-}
-
-.modal-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 13px;
-}
-
-.full {
-    grid-column: 1 / -1;
-}
-
-.modal-actions {
-    margin-top: 20px;
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-/* =========================================================
-   TOAST
-   ========================================================= */
-
-.toast {
-    position: fixed;
-    z-index: 1000;
-    bottom: 25px;
-    left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: #514a58;
-    color: white;
-    padding: 11px 17px;
-    border-radius: 12px;
-    opacity: 0;
-    transition: .25s;
-}
-
-.toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-}
-
-/* =========================================================
-   PRINT
-   ========================================================= */
-
-@media print {
-    :root, html, body, * {
-        print-color-adjust: exact !important;
-        -webkit-print-color-adjust: exact !important;
-    }
-    html, body {
-        width: 100% !important; margin: 0 !important; padding: 0 !important;
-        background: #fff !important; color: #000 !important;
-    }
-    header, .no-print, .modal-overlay, .toast, button {
-        display: none !important;
-    }
-    .container {
-        width: 100% !important; max-width: none !important;
-        margin: 0 !important; padding: 0 !important;
-    }
-    .panel {
-        width: 100% !important; margin: 0 !important; padding: 0 !important;
-        border: 0 !important; border-radius: 0 !important; box-shadow: none !important;
-        break-inside: avoid;
-    }
-    #printTitle {
-        color: #000 !important; margin: 0 0 4mm !important; font-size: 18pt !important;
-    }
-    .table-wrapper {
-        width: 100% !important; overflow: visible !important;
-        border: 0 !important; border-radius: 0 !important;
-    }
-    .timetable {
-        width: 100% !important; min-width: 0 !important;
-        table-layout: fixed !important; border-collapse: collapse !important;
-    }
-    .lesson, .lesson-name, .lesson-time, .lesson-info,
-    .timetable th, .time-cell { color: #000 !important; }
-    .lesson { box-shadow: none !important; transform: none !important; }
-    @page { size: A4 landscape; margin: 5mm; }
-}
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media(max-width:700px) {
-    .container {
-        width: min(100% - 22px, 1500px);
-        margin-top: 18px;
-    }
-    .panel {
-        border-radius: 19px;
-        padding: 17px;
-    }
-    .header-inner {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        *, *::before, *::after {
-            scroll-behavior: auto !important;
-            transition-duration: .01ms !important;
-            animation-duration: .01ms !important;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yas!Schedule</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        lavender: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                        },
+                        offwhite: {
+                            50: '#fcfcfc',
+                            100: '#f8f8f9',
+                            200: '#f1f1f3',
+                            300: '#e4e4e7',
+                        },
+                        pastel: {
+                            pink: '#ffd1dc',
+                            blue: '#bae1ff',
+                            yellow: '#ffffba',
+                            teal: '#baffc9',
+                            purple: '#e8c5ff',
+                            peach: '#ffdfba'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif']
+                    }
+                }
+            }
         }
-    }
-    .header-actions {
-        justify-content: center;
-    }
-    .modal-grid {
-        grid-template-columns: 1fr;
-    }
-    .full {
-        grid-column: auto;
-    }
-}
-
-</style>
+    </script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        @media print {
+            body { background: white !important; color: black !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            @page { size: A4 landscape; margin: 10mm; }
+            .print-container { width: 100% !important; overflow: visible !important; box-shadow: none !important; border: none !important; }
+        }
+        .print-only { display: none; }
+        .deleted-period-pattern {
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(239, 68, 68, 0.08),
+                rgba(239, 68, 68, 0.08) 10px,
+                rgba(239, 68, 68, 0.18) 10px,
+                rgba(239, 68, 68, 0.18) 20px
+            );
+        }
+        .dark .deleted-period-pattern {
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(248, 113, 113, 0.12),
+                rgba(248, 113, 113, 0.12) 10px,
+                rgba(248, 113, 113, 0.22) 10px,
+                rgba(248, 113, 113, 0.22) 20px
+            );
+        }
+        html { scroll-behavior: smooth; }
+        @media (prefers-reduced-motion: reduce) {
+            * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+        }
+    </style>
 </head>
+<body class="h-full bg-offwhite-100 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-100 font-sans transition-colors duration-200 flex flex-col">
 
-
-<body>
-
-<!-- =======================================================
-     HEADER
-======================================================= -->
-
-<header>
-<div class="header-inner">
-    <div class="logo">
-        YAS<span>!</span>
-    </div>
-    <div class="header-actions">
-        <button class="btn" onclick="openLessonModal()">
-            ＋ <span data-i18n="addLesson">Ajouter</span>
-        </button>
-        <button class="btn" onclick="saveData()">
-            💾 <span data-i18n="save">Sauvegarder</span>
-        </button>
-        <button class="btn" onclick="window.print()">
-            🖨️ <span data-i18n="print">Imprimer</span>
-        </button>
-        <button class="btn" onclick="exportPNG()">
-            🖼️ PNG
-        </button>
-        <button class="btn primary" onclick="printPDF()">
-            📄 PDF
-        </button>
-    </div>
-</div>
-</header>
-
-
-<main class="container">
-
-<!-- =======================================================
-     GENERAL SETTINGS
-======================================================= -->
-
-<section class="panel no-print">
-<div class="panel-title" data-i18n="settings">
-    Paramètres
-</div>
-
-<div class="settings-grid">
-    <!-- LANGUAGE -->
-    <div class="field">
-        <label data-i18n="language">Langue</label>
-        <select id="language" onchange="changeLanguage(this.value)">
-            <option value="fr">Français</option>
-            <option value="ar">العربية</option>
-            <option value="darija">الدارجة</option>
-            <option value="en">English</option>
-            <option value="es">Español</option>
-        </select>
-    </div>
-
-    <!-- TABLE TITLE -->
-    <div class="field">
-        <label data-i18n="tableTitle">Titre du tableau</label>
-        <input id="tableTitle" value="Mon emploi du temps" oninput="updateTitle()">
-    </div>
-
-    <!-- ORIENTATION -->
-    <div class="field">
-        <label data-i18n="orientation">Orientation</label>
-        <select id="orientation" onchange="renderTimetable()">
-            <option value="vertical" data-i18n="vertical">Vertical</option>
-            <option value="horizontal" data-i18n="horizontal">Horizontal</option>
-        </select>
-    </div>
-
-    <!-- NUMBER OF DAYS -->
-    <div class="field">
-        <label data-i18n="numberDays">Nombre de jours</label>
-        <select id="numberDays" onchange="changeNumberOfDays()">
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-        </select>
-    </div>
-
-    <!-- DAY START -->
-    <div class="field">
-        <label data-i18n="dayStart">Début de la journée</label>
-        <input type="time" id="dayStart" value="08:00" onchange="renderTimetable()">
-    </div>
-
-    <!-- DAY END -->
-    <div class="field">
-        <label data-i18n="dayEnd">Fin de la journée</label>
-        <input type="time" id="dayEnd" value="18:00" onchange="renderTimetable()">
-    </div>
-
-    <!-- FREE SLOT DURATION -->
-    <div class="field">
-        <label data-i18n="slotDuration">Durée des créneaux</label>
-        <input type="number" id="slotDuration" min="5" max="240" step="5" value="60" onchange="renderTimetable()">
-    </div>
-</div>
-</section>
-
-
-<!-- =======================================================
-     DELETE TIME
-======================================================= -->
-
-<section class="panel no-print">
-<div class="panel-title" data-i18n="deletePeriod">
-    Supprimer une période vide
-</div>
-
-<div class="settings-grid">
-    <div class="field">
-        <label data-i18n="from">De</label>
-        <input type="time" id="deleteStart" value="13:00">
-    </div>
-
-    <div class="field">
-        <label data-i18n="to">À</label>
-        <input type="time" id="deleteEnd" value="14:00">
-    </div>
-    
-    <!-- NEW: APPLY TO (Scope of deletion) -->
-    <div class="field">
-        <label data-i18n="applyTo">Appliquer à</label>
-        <select id="deleteMode" onchange="toggleDeleteMode()">
-            <option value="all" data-i18n="allDays">Tous les jours</option>
-            <option value="single" data-i18n="specificDay">Jour spécifique</option>
-            <option value="custom" data-i18n="customDays">Jours personnalisés</option>
-        </select>
-    </div>
-
-    <!-- NEW: SPECIFIC DAY (Hidden by default) -->
-    <div class="field" id="singleDayContainer" style="display:none;">
-        <label data-i18n="day">Jour</label>
-        <select id="deleteSingleDay"></select>
-    </div>
-
-    <div class="field" style="justify-content: flex-end;">
-        <button class="btn danger" onclick="deleteTimePeriod()">
-            🗑️ <span data-i18n="delete">Supprimer</span>
-        </button>
-    </div>
-
-    <!-- NEW: CUSTOM DAYS (Hidden by default) -->
-    <div class="field full" id="customDaysContainer" style="display:none;">
-        <label data-i18n="selectDays">Sélectionnez les jours</label>
-        <div id="deleteCustomDays" class="custom-days-grid"></div>
-    </div>
-</div>
-
-<div style="margin-top:15px">
-    <div style="font-size:13px;color:var(--muted)" data-i18n="deletedPeriods">
-        Périodes supprimées
-    </div>
-    <div id="deletedList" class="deleted-list" style="margin-top:8px"></div>
-</div>
-</section>
-
-<!-- =======================================================
-     SKIP TIME
-======================================================= -->
-
-<section class="panel no-print">
-<div class="panel-title" data-i18n="skipPeriod">
-    Skip time from the schedule
-</div>
-<p style="margin:-8px 0 17px;color:var(--muted);font-size:13px" data-i18n="skipDescription">
-    The selected time disappears from the timetable; unlike deleted periods, it is not crossed out.
-</p>
-
-<div class="settings-grid">
-    <div class="field">
-        <label data-i18n="from">From</label>
-        <input type="time" id="skipStart" value="13:00">
-    </div>
-
-    <div class="field">
-        <label data-i18n="to">To</label>
-        <input type="time" id="skipEnd" value="14:00">
-    </div>
-
-    <div class="field" style="justify-content:flex-end;">
-        <button class="btn primary" onclick="skipTimePeriod()">
-            ↗ <span data-i18n="skip">Skip time</span>
-        </button>
-    </div>
-</div>
-
-<div style="margin-top:15px">
-    <div style="font-size:13px;color:var(--muted)" data-i18n="skippedPeriods">
-        Skipped times
-    </div>
-    <div id="skippedList" class="deleted-list" style="margin-top:8px"></div>
-</div>
-</section>
-
-
-<!-- =======================================================
-     REGISTERED SUBJECTS (LIBRARY)
-======================================================= -->
-
-<section class="panel no-print">
-<div class="panel-title">
-    <span data-i18n="registeredSubjects">Matières enregistrées</span>
-    <button class="btn" style="font-size: 13px; padding: 6px 12px;" onclick="openSubjectModal()">
-        ＋ <span data-i18n="addSubject">Ajouter une matière</span>
-    </button>
-</div>
-
-<div id="subjectList" class="subject-list"></div>
-</section>
-
-
-<!-- =======================================================
-     TIMETABLE
-======================================================= -->
-
-<section class="panel">
-<h1 id="printTitle" style="text-align:center; font-size:25px; margin:5px 0 20px;">
-    Mon emploi du temps
-</h1>
-
-<div class="table-wrapper">
-    <table id="timetable" class="timetable"></table>
-</div>
-</section>
-
-</main>
-
-
-<!-- =======================================================
-     LESSON MODAL
-======================================================= -->
-
-<div id="lessonModal" class="modal-overlay">
-<div class="modal">
-    <h2 id="modalTitle">Ajouter une séance</h2>
-
-    <div class="modal-grid">
-        <!-- DAY -->
-        <div class="field">
-            <label data-i18n="day">Jour</label>
-            <select id="lessonDay"></select>
+    <header class="no-print bg-white/80 dark:bg-zinc-800/80 backdrop-blur-md border-b border-offwhite-300 dark:border-zinc-700 sticky top-0 z-30 px-4 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center space-x-3 rtl:space-x-reverse">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-lavender-400 to-pastel-pink flex items-center justify-center text-white font-bold text-lg shadow-sm">
+                <i class="fa-solid fa-calendar-days"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg tracking-tight flex items-center gap-2">
+                    Yas!Schedule
+                    <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-lavender-100 dark:bg-lavender-900 text-lavender-700 dark:text-lavender-300">v2.5</span>
+                </h1>
+                <p class="text-xs text-zinc-500 dark:text-zinc-400" data-i18n="subtitle">Minimalist Timetable Planner</p>
+            </div>
         </div>
 
-        <!-- SUBJECT -->
-        <div class="field">
-            <label data-i18n="subject">Matière</label>
-            <input id="lessonSubject" list="subjectOptions" placeholder="Math">
-            <datalist id="subjectOptions"></datalist>
+        <div class="flex items-center flex-wrap gap-2 sm:gap-3">
+            <select id="langSelect" class="bg-offwhite-200 dark:bg-zinc-700 text-xs font-medium px-2.5 py-2 rounded-xl border border-transparent focus:border-lavender-400 outline-none cursor-pointer">
+                <option value="en">English</option>
+                <option value="fr">Français</option>
+                <option value="es">Español</option>
+                <option value="ar">العربية</option>
+                <option value="darija">Darija</option>
+            </select>
+
+            <button id="themeToggleBtn" class="w-9 h-9 rounded-xl bg-offwhite-200 dark:bg-zinc-700 flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:bg-lavender-100 transition-colors" title="Toggle Theme">
+                <i class="fa-solid fa-moon dark:hidden"></i>
+                <i class="fa-solid fa-sun hidden dark:block"></i>
+            </button>
+
+            <button id="authBtn" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-lavender-100 dark:bg-lavender-900/50 text-lavender-700 dark:text-lavender-300 text-xs font-semibold hover:bg-lavender-200 transition-colors">
+                <i class="fa-brands fa-google"></i>
+                <span id="authBtnText">Sign In</span>
+            </button>
+
+            <button onclick="window.print()" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-pastel-blue/60 dark:bg-blue-900/40 text-blue-800 dark:text-blue-200 text-xs font-semibold hover:bg-pastel-blue transition-colors">
+                <i class="fa-solid fa-print"></i>
+                <span data-i18n="printPdf">Print / PDF</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 lg:p-6 flex flex-col gap-6 overflow-x-hidden">
+        
+        <div class="no-print bg-white dark:bg-zinc-800 p-4 rounded-2xl border border-offwhite-300 dark:border-zinc-700 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+            <div class="flex items-center gap-3 flex-wrap">
+                <div class="flex items-center gap-2">
+                    <label for="timetableSelector" class="text-xs font-semibold text-zinc-500 uppercase tracking-wider" data-i18n="schedule">Schedule:</label>
+                    <select id="timetableSelector" class="bg-offwhite-100 dark:bg-zinc-900 text-sm font-semibold px-3 py-2 rounded-xl border border-offwhite-300 dark:border-zinc-700 focus:border-lavender-500 outline-none min-w-[160px]">
+                    </select>
+                </div>
+                <button id="newTimetableBtn" class="px-3 py-2 bg-offwhite-200 dark:bg-zinc-700 hover:bg-lavender-100 dark:hover:bg-zinc-600 rounded-xl text-xs font-semibold transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-plus text-[10px]"></i> <span data-i18n="newSchedule">New Schedule</span>
+                </button>
+                <button id="renameTimetableBtn" class="px-3 py-2 bg-offwhite-200 dark:bg-zinc-700 hover:bg-lavender-100 dark:hover:bg-zinc-600 rounded-xl text-xs font-semibold transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-pen text-[10px]"></i> <span data-i18n="rename">Rename</span>
+                </button>
+                <button id="deleteTimetableBtn" class="px-3 py-2 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 hover:bg-red-100 rounded-xl text-xs font-semibold transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-trash text-[10px]"></i> <span data-i18n="delete">Delete</span>
+                </button>
+            </div>
+
+            <div class="flex items-center gap-2 flex-wrap">
+                <button id="openSubjectsBtn" class="px-3.5 py-2 bg-pastel-pink/70 dark:bg-pink-950/40 text-pink-900 dark:text-pink-200 rounded-xl text-xs font-semibold hover:bg-pastel-pink transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-book"></i> <span data-i18n="subjectLibrary">Subjects Library</span>
+                </button>
+                <button id="openSettingsBtn" class="px-3.5 py-2 bg-pastel-teal/70 dark:bg-teal-950/40 text-teal-900 dark:text-teal-200 rounded-xl text-xs font-semibold hover:bg-pastel-teal transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-gear"></i> <span data-i18n="settings">Settings & Hours</span>
+                </button>
+                <button id="openExcludedBtn" class="px-3.5 py-2 bg-pastel-yellow/70 dark:bg-yellow-950/40 text-yellow-900 dark:text-yellow-200 rounded-xl text-xs font-semibold hover:bg-pastel-yellow transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-ban"></i> <span data-i18n="breaksAndSkips">Breaks & Skips</span>
+                </button>
+            </div>
         </div>
 
-        <!-- START -->
-        <div class="field">
-            <label data-i18n="start">Début</label>
-            <input type="time" id="lessonStart" value="08:00">
-        </div>
+        <div class="bg-white dark:bg-zinc-800 rounded-3xl border border-offwhite-300 dark:border-zinc-700 shadow-sm p-4 sm:p-6 flex flex-col gap-6 print-container">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-offwhite-300 dark:border-zinc-700 pb-4">
+                <div>
+                    <h2 id="liveTableTitle" class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">My Weekly Schedule</h2>
+                    <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5" id="tableSubtitle">Click on any time slot cell to add a lesson.</p>
+                </div>
 
-        <!-- END -->
-        <div class="field">
-            <label data-i18n="end">Fin</label>
-            <input type="time" id="lessonEnd" value="09:00">
-        </div>
+                <div class="flex items-center gap-3">
+                    <div class="flex bg-offwhite-200 dark:bg-zinc-700 p-1 rounded-xl text-xs font-semibold">
+                        <button id="viewModeVertical" class="px-3 py-1.5 rounded-lg bg-white dark:bg-zinc-800 shadow-xs transition-all" data-i18n="vertical">Vertical</button>
+                        <button id="viewModeHorizontal" class="px-3 py-1.5 rounded-lg text-zinc-600 dark:text-zinc-400 transition-all" data-i18n="horizontal">Horizontal</button>
+                    </div>
 
-        <!-- TEACHER -->
-        <div class="field">
-            <label data-i18n="teacher">Professeur</label>
-            <input id="lessonTeacher" placeholder="...">
-        </div>
+                    <button id="resetTableBtn" class="no-print px-3 py-1.5 text-xs font-semibold text-zinc-500 hover:text-red-600 dark:text-zinc-400 dark:hover:text-red-400 transition-colors">
+                        <i class="fa-solid fa-rotate-right mr-1"></i> <span data-i18n="resetTable">Reset Table</span>
+                    </button>
+                </div>
+            </div>
 
-        <!-- LOCATION -->
-        <div class="field">
-            <label data-i18n="location">Salle / Lieu</label>
-            <input id="lessonLocation" placeholder="Salle 12">
+            <div class="overflow-x-auto w-full rounded-2xl border border-offwhite-300 dark:border-zinc-700">
+                <div id="timetableGridWrapper" class="min-w-[700px]">
+                </div>
+            </div>
         </div>
+    </main>
 
-        <!-- COLOR -->
-        <div class="field full">
-            <label data-i18n="color">Couleur</label>
-            <div style="display:flex; align-items:center; gap:12px;">
-                <input type="color" id="lessonColor" value="#d9c5e8" 
-                       style="width:55px; height:40px; border:0; background:none; padding:0;">
-                <span id="colorHex">#d9c5e8</span>
+    <!-- 1. Lesson Modal (Add/Edit with Slot Span selection) -->
+    <div id="lessonModal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-zinc-800 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-offwhite-300 dark:border-zinc-700 flex flex-col gap-4 relative animate-in fade-in zoom-in-95 duration-150">
+            <div class="flex items-center justify-between border-b border-offwhite-300 dark:border-zinc-700 pb-3">
+                <h3 id="lessonModalTitle" class="font-bold text-lg" data-i18n="addLesson">Add Lesson</h3>
+                <button onclick="closeModal('lessonModal')" class="w-8 h-8 rounded-full bg-offwhite-200 dark:bg-zinc-700 flex items-center justify-center text-zinc-500 hover:bg-offwhite-300"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <form id="lessonForm" class="flex flex-col gap-4">
+                <input type="hidden" id="lessonId">
+                <input type="hidden" id="lessonDay">
+                <input type="hidden" id="lessonTimeSlotIndex">
+
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1" data-i18n="subject">Subject</label>
+                    <input type="text" id="lessonSubject" list="subjectsDatalist" required class="w-full bg-offwhite-100 dark:bg-zinc-900 border border-offwhite-300 dark:border-zinc-700 rounded-xl px-3.5 py-2 text-sm focus:border-lavender-500 outline-none" placeholder="Select or type subject...">
+                    <datalist id="subjectsDatalist"></datalist>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1" data-i18n="startTime">Start Time</label>
+                        <input type="time" id="lessonStartTime" required class="w-full bg-offwhite-100 dark:bg-zinc-900 border border-offwhite-300 dark:border-zinc-700 rounded-xl px-3.5 py-2 text-sm focus:border-lavender-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1" data-i18n="endTime">End Time</label>
+                        <input type="time" id="lessonEndTime" required class="w-full bg-offwhite-100 dark:bg-zinc-900 border border-offwhite-300 dark:border-zinc-700 rounded-xl px-3.5 py-2 text-sm focus:border-lavender-500 outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1" data-i18n="slotSpan">Duration in Slots (Span)</label>
+                    <select id="lessonSlotSpan" class="w-full bg-offwhite-100 dark:bg-zinc-900 border border-offwhite-300 dark:border-zinc-700 rounded-xl px-3.5 py-2 text-sm focus:border-lavender-500 outline-none">
+                        <option value="1">1 Slot (Normal)</option>
+                        <option value="2">2 Slots (Double)</option>
+                        <option value="3">3 Slots (Triple)</option>
+                        <option value="4">4 Slots</option>
+                        <option value="5">5 Slots</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1" data-i18n="teacher">Teacher (Optional)</label>
+                        <input type="text" id="lessonTeacher" class="w-full bg-offwhite-100 dark:bg-zinc-900 border border-offwhite-300 dark:border-zinc-700 rounded-xl px-3.5 py-2 text-sm focus:border-lavender-500 outline-none" placeholder="Mr. Smith">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1" data-i18n="room">Room / Location</label>
+                        <input type="text" id="lessonRoom" class="w-full bg-offwhite-100 dark:bg-zinc-900 border border-offwhite-300 dark:border-zinc-700 rounded-xl px-3.5 py-2 text-sm focus:border-lavender-500 outline-none" placeholder="Room 302">
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-2">
+                    <button type="button" id="deleteLessonBtn" class="px-4 py-2 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 rounded-xl text-xs font-semibold hover:bg-red-100 transition-colors hidden">
+                        <i class="fa-solid fa-trash mr-1"></i> <span data-i18n="delete">Delete</span>
+                    </button>
+                    <div class="flex items-center gap-2 ml-auto">
+                        <button type="button" onclick="closeModal('lessonModal')" class="px-4 py-2 bg-offwhite-200 dark:bg-zinc-700 rounded-xl text-xs font-semibold hover:bg-offwhite-300" data-i18n="cancel">Cancel</button>
+                        <button type="submit" class="px-4 py-2 bg-lavender-600 text-white rounded-xl text-xs font-semibold hover:bg-lavender-700 transition-colors shadow-sm" data-i18n="save">Save Lesson</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. Subjects Library Modal -->
+    <div id="subjectsModal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-zinc-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-offwhite-300 dark:border-zinc-700 flex flex-col gap-4 relative max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-offwhite-300 dark:border-zinc-700 pb-3">
+                <h3 class="font-bold text-lg" data-i18n="subjectLibrary">Subjects Library</h3>
+                <button onclick="closeModal('subjectsModal')" class="w-8 h-8 rounded-full bg-offwhite-200 dark:bg-zinc-700 flex items-center justify-center text-zinc-500 hover:bg-offwhite-300"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form id="subjectForm" class="flex gap-2 items-center bg-offwhite-100 dark:bg-zinc-900 p-3 rounded-2xl border border-offwhite-300 dark:border-zinc-700">
+                <input type="text" id="newSubjectName" required placeholder="Subject Name (e.g. Mathematics)" class="flex-1 bg-white dark:bg-zinc-800 border border-offwhite-300 dark:border-zinc-700 rounded-xl px-3.5 py-2 text-sm focus:border-lavender-500 outline-none">
+                <input type="color" id="newSubjectColor" value="#c4b5fd" class="w-10 h-10 rounded-xl border border-offwhite-300 dark:border-zinc-700 bg-transparent cursor-pointer p-1">
+                <button type="submit" class="px-4 py-2.5 bg-lavender-600 text-white rounded-xl text-xs font-semibold hover:bg-lavender-700 transition-colors" data-i18n="add">Add</button>
+            </form>
+
+            <div id="subjectsListContainer" class="flex flex-col gap-2 max-h-60 overflow-y-auto pr-1">
             </div>
         </div>
     </div>
 
-    <div class="modal-actions">
-        <button class="btn danger" id="deleteLessonBtn" onclick="deleteCurrentLesson()" style="display:none">
-            🗑️ <span data-i18n="delete">Supprimer</span>
-        </button>
-        <button class="btn" onclick="closeLessonModal()">
-            <span data-i18n="cancel">Annuler</span>
-        </button>
-        <button class="btn primary" onclick="saveLesson()">
-            ✓ <span data-i18n="confirm">Enregistrer</span>
-        </button>
-    </div>
-</div>
-</div>
+    <!-- 3. Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-zinc-800 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-offwhite-300 dark:border-zinc-700 flex flex-col gap-4 relative">
+            <div class="flex items-center justify-between border-b border-offwhite-300 dark:border-zinc-700 pb-3">
+                <h3 class="font-bold text-lg" data-i18n="settings">Settings & Hours</h3>
+                <button onclick="closeModal('settingsModal')" class="w-8 h-8 rounded-full bg-offwhite-200 dark:bg-zinc-700 flex items-center justify-center text-zinc-500 hover:bg-offwhite-300"><i class="fa-solid fa-xmark"></i></button>
+            </div>
 
+            <form id="settingsForm" class="flex flex-col gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1" data-i18n="tableTitle">Table Title</label>
+                    <input type="text" id="settingTitleInput" class="w-full bg-offwhite-100 dark:bg-zinc-900 border border-offwhite-300 dark:border-zinc-700 rounded-xl px-3.5 py-2 text-sm focus:border-lavender-500 outline-none">
+                </div>
 
-<!-- =======================================================
-     SUBJECT MODAL
-======================================================= -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1" data-i18n="daysCount">Number of Days (5-7)</label>
+                        <input type="number" id="settingDaysCount" min="5" max="7" class="w-full bg-offwhite-100 dark:bg-zinc-900 border border-offwhite-300 dark:border-zinc-700 rounded-xl px-3.5 py-2 text-sm focus:border-lavender-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1" data-i18n="slotsCount">Number of Slots (up to 24)</label>
+                        <input type="number" id="settingSlotsCount" min="1" max="24" class="w-full bg-offwhite-100 dark:bg-zinc-900 border border-offwhite-300 dark:border-zinc-700 rounded-xl px-3.5 py-2 text-sm focus:border-lavender-500 outline-none">
+                    </div>
+                </div>
 
-<div id="subjectModal" class="modal-overlay">
-<div class="modal" style="width: min(400px, 100%);">
-    <h2 id="subjectModalTitle" data-i18n="addSubject">Ajouter une matière</h2>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1" data-i18n="startTimeSlot">First Slot Start Time</label>
+                        <input type="time" id="settingStartTime" class="w-full bg-offwhite-100 dark:bg-zinc-900 border border-offwhite-300 dark:border-zinc-700 rounded-xl px-3.5 py-2 text-sm focus:border-lavender-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1" data-i18n="slotDuration">Slot Duration (Minutes)</label>
+                        <input type="number" id="settingSlotDuration" min="15" max="180" step="5" class="w-full bg-offwhite-100 dark:bg-zinc-900 border border-offwhite-300 dark:border-zinc-700 rounded-xl px-3.5 py-2 text-sm focus:border-lavender-500 outline-none">
+                    </div>
+                </div>
 
-    <div class="modal-grid" style="grid-template-columns: 1fr;">
-        <!-- SUBJECT NAME -->
-        <div class="field">
-            <label data-i18n="subjectName">Nom de la matière</label>
-            <input id="modalSubjectName" placeholder="...">
+                <div class="flex justify-end pt-2">
+                    <button type="submit" class="px-5 py-2.5 bg-lavender-600 text-white rounded-xl text-xs font-semibold hover:bg-lavender-700 transition-colors shadow-sm" data-i18n="saveSettings">Save Settings</button>
+                </div>
+            </form>
         </div>
+    </div>
 
-        <!-- SUBJECT COLOR -->
-        <div class="field">
-            <label data-i18n="color">Couleur</label>
-            <div style="display:flex; align-items:center; gap:12px;">
-                <input type="color" id="modalSubjectColor" value="#c9dcf2" 
-                       style="width:55px; height:40px; border:0; background:none; padding:0;">
-                <span id="modalSubjectColorHex">#c9dcf2</span>
+    <!-- 4. Breaks & Skips Modal (Excluded Times) -->
+    <div id="excludedModal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-zinc-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-offwhite-300 dark:border-zinc-700 flex flex-col gap-4 relative max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-offwhite-300 dark:border-zinc-700 pb-3">
+                <h3 class="font-bold text-lg" data-i18n="breaksAndSkips">Breaks & Excluded Times</h3>
+                <button onclick="closeModal('excludedModal')" class="w-8 h-8 rounded-full bg-offwhite-200 dark:bg-zinc-700 flex items-center justify-center text-zinc-500 hover:bg-offwhite-300"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form id="excludeForm" class="flex flex-col gap-3 bg-offwhite-100 dark:bg-zinc-900 p-4 rounded-2xl border border-offwhite-300 dark:border-zinc-700">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1" data-i18n="exclusionType">Type</label>
+                        <select id="excludeType" class="w-full bg-white dark:bg-zinc-800 border border-offwhite-300 dark:border-zinc-700 rounded-xl px-3 py-2 text-xs outline-none">
+                            <option value="delete" data-i18n="deletePeriodOpt">Delete Period (Striped / Blocked)</option>
+                            <option value="skip" data-i18n="skipTimeOpt">Skip Time (Hide Slot Entirely)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1" data-i18n="slotIndex">Slot</label>
+                        <select id="excludeSlotIndex" class="w-full bg-white dark:bg-zinc-800 border border-offwhite-300 dark:border-zinc-700 rounded-xl px-3 py-2 text-xs outline-none">
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1" data-i18n="applyToDays">Apply To Days</label>
+                    <div id="excludeDaysCheckboxes" class="flex flex-wrap gap-2 mt-1">
+                    </div>
+                </div>
+
+                <button type="submit" class="mt-2 px-4 py-2.5 bg-lavender-600 text-white rounded-xl text-xs font-semibold hover:bg-lavender-700 transition-colors self-end" data-i18n="applyExclusion">Apply Rule</button>
+            </form>
+
+            <div>
+                <h4 class="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2" data-i18n="activeExclusions">Active Restrictions</h4>
+                <div id="exclusionsListContainer" class="flex flex-col gap-2 max-h-40 overflow-y-auto">
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="modal-actions">
-        <button class="btn danger" id="deleteSubjectBtn" onclick="deleteCurrentSubject()" style="display:none">
-            🗑️ <span data-i18n="delete">Supprimer</span>
-        </button>
-        <button class="btn" onclick="closeSubjectModal()">
-            <span data-i18n="cancel">Annuler</span>
-        </button>
-        <button class="btn primary" onclick="saveSubject()">
-            ✓ <span data-i18n="confirm">Enregistrer</span>
-        </button>
-    </div>
-</div>
-</div>
+    <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-<div id="toast" class="toast"></div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'yasschedule-app-v2.5';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
 
-<script>
-/* =========================================================
-   TRANSLATIONS
-========================================================= */
+        let db = null;
+        let auth = null;
+        let currentUser = null;
 
-const T = {
-fr: {
-settings:"Paramètres", language:"Langue", tableTitle:"Titre du tableau", orientation:"Orientation", vertical:"Vertical", horizontal:"Horizontal", numberDays:"Nombre de jours", dayStart:"Début de la journée", dayEnd:"Fin de la journée", slotDuration:"Durée des créneaux", deletePeriod:"Supprimer une période vide", skipPeriod:"Ignorer une période dans l’emploi du temps", skipDescription:"La période choisie disparaît du tableau ; contrairement aux périodes supprimées, elle n’est pas barrée.", skip:"Ignorer cette période", skippedPeriods:"Périodes ignorées", skipConflict:"Une séance existe pendant cette période.", skipOutsideSchedule:"Cette période doit se trouver dans les heures de la journée.", from:"De", to:"À", delete:"Supprimer", deletedPeriods:"Périodes supprimées", colors:"Couleurs des matières", addLesson:"Ajouter", save:"Sauvegarder", print:"Imprimer", day:"Jour", subject:"Matière", start:"Début", end:"Fin", teacher:"Professeur", location:"Salle / Lieu", color:"Couleur", cancel:"Annuler", confirm:"Enregistrer",
-// New terms
-applyTo:"Appliquer à", allDays:"Tous les jours", specificDay:"Jour spécifique", customDays:"Jours personnalisés", selectDays:"Sélectionnez les jours", registeredSubjects:"Matières enregistrées", addSubject:"Ajouter une matière", editSubject:"Modifier la matière", subjectName:"Nom de la matière", deleteConflict:"Une séance existe dans cette période pour les jours sélectionnés.", periodDeleted:"Période supprimée.", subjectSaved:"Matière enregistrée.", subjectDeleted:"Matière supprimée."
-},
-
-en: {
-settings:"Settings", language:"Language", tableTitle:"Table title", orientation:"Orientation", vertical:"Vertical", horizontal:"Horizontal", numberDays:"Number of days", dayStart:"Day start", dayEnd:"Day end", slotDuration:"Time slot duration", deletePeriod:"Delete empty period", skipPeriod:"Skip time from the schedule", skipDescription:"The selected time disappears from the timetable; unlike deleted periods, it is not crossed out.", skip:"Skip time", skippedPeriods:"Skipped times", skipConflict:"A lesson is scheduled during this time.", skipOutsideSchedule:"This time must fall within the scheduled day.", from:"From", to:"To", delete:"Delete", deletedPeriods:"Deleted periods", colors:"Subject colors", addLesson:"Add", save:"Save", print:"Print", day:"Day", subject:"Subject", start:"Start", end:"End", teacher:"Teacher", location:"Room / Location", color:"Color", cancel:"Cancel", confirm:"Save",
-// New terms
-applyTo:"Apply to", allDays:"All days", specificDay:"Specific day", customDays:"Custom days", selectDays:"Select days", registeredSubjects:"Registered subjects", addSubject:"Add subject", editSubject:"Edit subject", subjectName:"Subject name", deleteConflict:"A lesson exists in this period for the selected days.", periodDeleted:"Period deleted.", subjectSaved:"Subject saved.", subjectDeleted:"Subject deleted."
-},
-
-es: {
-settings:"Configuración", language:"Idioma", tableTitle:"Título del horario", orientation:"Orientación", vertical:"Vertical", horizontal:"Horizontal", numberDays:"Número de días", dayStart:"Inicio del día", dayEnd:"Fin del día", slotDuration:"Duración de los bloques", deletePeriod:"Eliminar período vacío", skipPeriod:"Omitir un período del horario", skipDescription:"El tiempo seleccionado desaparece del horario; a diferencia de los períodos eliminados, no queda tachado.", skip:"Omitir período", skippedPeriods:"Períodos omitidos", skipConflict:"Hay una clase programada durante este período.", skipOutsideSchedule:"El período debe estar dentro del horario del día.", from:"Desde", to:"Hasta", delete:"Eliminar", deletedPeriods:"Períodos eliminados", colors:"Colores de asignaturas", addLesson:"Añadir", save:"Guardar", print:"Imprimir", day:"Día", subject:"Asignatura", start:"Inicio", end:"Fin", teacher:"Profesor", location:"Aula / Lugar", color:"Color", cancel:"Cancelar", confirm:"Guardar",
-// New terms
-applyTo:"Aplicar a", allDays:"Todos los días", specificDay:"Día específico", customDays:"Días personalizados", selectDays:"Seleccionar días", registeredSubjects:"Asignaturas registradas", addSubject:"Añadir asignatura", editSubject:"Editar asignatura", subjectName:"Nombre de la asignatura", deleteConflict:"Existe una lección en este período para los días seleccionados.", periodDeleted:"Período eliminado.", subjectSaved:"Asignatura guardada.", subjectDeleted:"Asignatura eliminada."
-},
-
-ar: {
-settings:"الإعدادات", language:"اللغة", tableTitle:"عنوان الجدول", orientation:"اتجاه الجدول", vertical:"طولي", horizontal:"عرضي", numberDays:"عدد أيام الدراسة", dayStart:"بداية اليوم", dayEnd:"نهاية اليوم", slotDuration:"مدة الخانات", deletePeriod:"حذف فترة فارغة", skipPeriod:"تجاوز وقت من الجدول", skipDescription:"يختفي الوقت المحدد من الجدول؛ بخلاف الفترات المحذوفة، لا يتم شطبه.", skip:"تجاوز الوقت", skippedPeriods:"الأوقات المتجاوزة", skipConflict:"توجد حصة مجدولة خلال هذه الفترة.", skipOutsideSchedule:"يجب أن تقع الفترة ضمن ساعات اليوم الدراسي.", from:"من", to:"إلى", delete:"حذف", deletedPeriods:"الفترات المحذوفة", colors:"ألوان المواد", addLesson:"إضافة حصة", save:"حفظ", print:"طباعة", day:"اليوم", subject:"المادة", start:"البداية", end:"النهاية", teacher:"الأستاذ", location:"القاعـة / المكان", color:"اللون", cancel:"إلغاء", confirm:"حفظ",
-// New terms
-applyTo:"تطبيق على", allDays:"جميع الأيام", specificDay:"يوم محدد", customDays:"أيام مخصصة", selectDays:"تحديد الأيام", registeredSubjects:"المواد المسجلة", addSubject:"إضافة مادة", editSubject:"تعديل المادة", subjectName:"اسم المادة", deleteConflict:"توجد حصة مسجلة في هذه الفترة للأيام المحددة.", periodDeleted:"تم حذف الفترة.", subjectSaved:"تم حفظ المادة.", subjectDeleted:"تم حذف المادة."
-},
-
-darija: {
-settings:"الإعدادات", language:"اللغة", tableTitle:"عنوان الجدول", orientation:"اتجاه الجدول", vertical:"طولي", horizontal:"عرضي", numberDays:"عدد أيام القراية", dayStart:"بداية النهار", dayEnd:"نهاية النهار", slotDuration:"مدة الخانات", deletePeriod:"مسح فترة خاوية", skipPeriod:"تجاوز وقت من الجدول", skipDescription:"الوقت لي اخترتي كيختافي من الجدول وما كيتشطبش بحال الفترة الممسوحة.", skip:"تجاوز الوقت", skippedPeriods:"الأوقات المتجاوزة", skipConflict:"كاينة حصة فهاد الوقت.", skipOutsideSchedule:"خاص هاد الفترة تكون وسط ساعات القراية.", from:"من", to:"حتى", delete:"مسح", deletedPeriods:"الفترات الممسوحة", colors:"ألوان المواد", addLesson:"زيد حصة", save:"حفظ", print:"طبع", day:"النهار", subject:"المادة", start:"البداية", end:"النهاية", teacher:"الأستاذ", location:"القاعـة / البلاصة", color:"اللون", cancel:"إلغاء", confirm:"حفظ",
-// New terms
-applyTo:"طبق على", allDays:"ڭاع الأيام", specificDay:"نهار محدد", customDays:"أيام مخصصة", selectDays:"عزل الأيام", registeredSubjects:"المواد المسجلة", addSubject:"زيد مادة", editSubject:"بدل المادة", subjectName:"السمية د المادة", deleteConflict:"كاينة حصة فهاد الوقت للأيام لي عزلت.", periodDeleted:"تم مسح الفترة.", subjectSaved:"تم حفظ المادة.", subjectDeleted:"تم مسح المادة."
-}
-
-};
-
-/* =========================================================
-   DAY NAMES
-========================================================= */
-
-const DAYS = {
-fr:["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"],
-en:["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
-es:["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"],
-ar:["الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت","الأحد"],
-darija:["الحد","التنين","التلات","الربعة","الخميس","الجمعة","السبت"]
-};
-
-/* =========================================================
-   STATE
-========================================================= */
-
-let state = {
-    language:"fr",
-    title:"Mon emploi du temps",
-    orientation:"vertical",
-    numberDays:5,
-    dayStart:"08:00",
-    dayEnd:"18:00",
-    slotDuration:60,
-    days:[],
-    lessons:[],
-    deletedPeriods:[], // Format updated: {start, end, days: ['Lundi', ...]}
-    skippedPeriods:[],
-    colors:{
-        "Math":"#c9dcf2",
-        "Français":"#f3c7d9",
-        "English":"#d9c8ee",
-        "العربية":"#e9b6b6",
-        "التربية الإسلامية":"#f4df9e",
-        "Philosophie":"#d9c5b2",
-        "EPS":"#a8c7b0",
-        "Physique":"#b4c9e8",
-        "Chimie":"#b4c9e8",
-        "SVT":"#c8dfc5"
-    }
-};
-
-let editingLessonId = null;
-let editingSubjectOldName = null;
-
-/* =========================================================
-   INIT
-========================================================= */
-
-window.addEventListener("DOMContentLoaded",()=>{
-    loadData();
-    createDaysIfNecessary();
-    syncControls();
-    applyLanguage();
-    renderSubjectColors();
-    updateDeleteDaysUI();
-    renderTimetable();
-    updateDeletedList();
-    updateSkippedList();
-});
-
-function createDaysIfNecessary(){
-    if(!Array.isArray(state.days) || state.days.length !== state.numberDays){
-        state.days = DAYS[state.language].slice(0,state.numberDays);
-    }
-}
-
-/* =========================================================
-   SYNC UI & LANGUAGE
-========================================================= */
-
-function syncControls(){
-    document.getElementById("language").value = state.language;
-    document.getElementById("tableTitle").value = state.title;
-    document.getElementById("orientation").value = state.orientation;
-    document.getElementById("numberDays").value = state.numberDays;
-    document.getElementById("dayStart").value = state.dayStart;
-    document.getElementById("dayEnd").value = state.dayEnd;
-    document.getElementById("slotDuration").value = state.slotDuration;
-}
-
-function changeLanguage(lang){
-    state.language = lang;
-    state.days = DAYS[lang].slice(0,state.numberDays);
-    
-    // Update deleted periods day names to match new language (if migrating them is needed, 
-    // for simplicity, we assume they align by index or we just clear/re-render cleanly).
-    // In a robust scenario, we map by index. Here we focus on UI updates.
-    
-    applyLanguage();
-    updateDeleteDaysUI();
-    renderTimetable();
-    renderSubjectColors();
-    updateDeletedList();
-    saveData(false);
-}
-
-function applyLanguage(){
-    const lang = state.language;
-    const isArabic = lang === "ar" || lang === "darija";
-    document.documentElement.lang = isArabic ? "ar" : lang;
-    document.documentElement.dir = isArabic ? "rtl" : "ltr";
-    document.body.style.direction = isArabic ? "rtl" : "ltr";
-
-    document.querySelectorAll("[data-i18n]").forEach(el=>{
-        const key = el.dataset.i18n;
-        if(T[lang][key]){
-            el.textContent = T[lang][key];
-        }
-    });
-
-    document.querySelectorAll("#orientation option, #deleteMode option").forEach(option=>{
-        const key = option.dataset.i18n;
-        if(key && T[lang][key]){
-            option.textContent = T[lang][key];
-        }
-    });
-}
-
-function updateTitle(){
-    state.title = document.getElementById("tableTitle").value;
-    document.getElementById("printTitle").textContent = state.title || " ";
-    saveData(false);
-}
-
-/* =========================================================
-   TIME HELPERS & SLOTS
-========================================================= */
-
-function timeToMinutes(time){
-    const [h,m] = time.split(":").map(Number);
-    return h*60+m;
-}
-
-function minutesToTime(minutes){
-    const h = Math.floor(minutes/60).toString().padStart(2,"0");
-    const m = (minutes%60).toString().padStart(2,"0");
-    return `${h}:${m}`;
-}
-
-function getTimeSlots(){
-    const start = timeToMinutes(document.getElementById("dayStart").value);
-    const end = timeToMinutes(document.getElementById("dayEnd").value);
-    const duration = Number(document.getElementById("slotDuration").value);
-    const slots = [];
-
-    if(duration <= 0 || end <= start) return slots;
-    const skipped = (state.skippedPeriods || [])
-        .map(period => ({start:timeToMinutes(period.start), end:timeToMinutes(period.end)}))
-        .filter(period => period.end > period.start)
-        .sort((a,b) => a.start - b.start);
-
-    for(let t=start; t<end;){
-        const activeSkip = skipped.find(period => t >= period.start && t < period.end);
-        if(activeSkip){
-            t = Math.min(activeSkip.end, end);
-            continue;
-        }
-        const nextSkip = skipped.find(period => period.start > t);
-        const e = Math.min(t + duration, end, nextSkip ? nextSkip.start : end);
-        if(e <= t) break;
-        slots.push({start:minutesToTime(t), end:minutesToTime(e)});
-        t = e;
-    }
-    return slots;
-}
-
-function skipTimePeriod(){
-    const start = document.getElementById("skipStart").value;
-    const end = document.getElementById("skipEnd").value;
-    if(!start || !end){
-        showToast(T[state.language].cancel || "Invalid time.");
-        return;
-    }
-    const startMinutes = timeToMinutes(start);
-    const endMinutes = timeToMinutes(end);
-    const dayStart = timeToMinutes(document.getElementById("dayStart").value);
-    const dayEnd = timeToMinutes(document.getElementById("dayEnd").value);
-
-    if(startMinutes >= endMinutes){
-        showToast(T[state.language].cancel || "Invalid time.");
-        return;
-    }
-    if(startMinutes < dayStart || endMinutes > dayEnd){
-        showToast(T[state.language].skipOutsideSchedule);
-        return;
-    }
-    state.skippedPeriods = state.skippedPeriods || [];
-    if(state.skippedPeriods.some(period =>
-        startMinutes < timeToMinutes(period.end) && endMinutes > timeToMinutes(period.start)
-    )){
-        showToast(T[state.language].skipConflict);
-        return;
-    }
-    const conflict = state.lessons.some(lesson =>
-        timeToMinutes(lesson.start) < endMinutes && timeToMinutes(lesson.end) > startMinutes
-    );
-    if(conflict){
-        showToast(T[state.language].skipConflict);
-        return;
-    }
-
-    state.skippedPeriods.push({start, end});
-    renderTimetable();
-    updateSkippedList();
-    saveData(false);
-}
-
-function restoreSkippedPeriod(index){
-    state.skippedPeriods.splice(index, 1);
-    renderTimetable();
-    updateSkippedList();
-    saveData(false);
-}
-
-function updateSkippedList(){
-    const container = document.getElementById("skippedList");
-    container.innerHTML = "";
-    (state.skippedPeriods || []).forEach((period, index) => {
-        const item = document.createElement("div");
-        item.className = "skipped-item";
-        item.append(document.createTextNode(`${period.start} → ${period.end} `));
-        const restore = document.createElement("button");
-        restore.type = "button";
-        restore.textContent = "×";
-        restore.setAttribute("aria-label", `${period.start} – ${period.end}`);
-        restore.onclick = () => restoreSkippedPeriod(index);
-        item.appendChild(restore);
-        container.appendChild(item);
-    });
-}
-
-/* =========================================================
-   DELETE PERIOD ADVANCED
-========================================================= */
-
-function toggleDeleteMode(){
-    const mode = document.getElementById("deleteMode").value;
-    document.getElementById("singleDayContainer").style.display = (mode === 'single') ? 'flex' : 'none';
-    document.getElementById("customDaysContainer").style.display = (mode === 'custom') ? 'flex' : 'none';
-}
-
-function updateDeleteDaysUI(){
-    // Specific Day Select
-    const select = document.getElementById("deleteSingleDay");
-    select.innerHTML = "";
-    state.days.forEach(day => {
-        const opt = document.createElement("option");
-        opt.value = day;
-        opt.textContent = day;
-        select.appendChild(opt);
-    });
-
-    // Custom Days Checkboxes
-    const customGrid = document.getElementById("deleteCustomDays");
-    customGrid.innerHTML = "";
-    state.days.forEach((day, idx) => {
-        const label = document.createElement("label");
-        label.className = "custom-day-label";
-        const cb = document.createElement("input");
-        cb.type = "checkbox";
-        cb.value = day;
-        cb.checked = true; // default checked
-        label.appendChild(cb);
-        label.appendChild(document.createTextNode(day));
-        customGrid.appendChild(label);
-    });
-}
-
-function getSelectedDaysForDelete() {
-    const mode = document.getElementById("deleteMode").value;
-    if (mode === 'all') {
-        return [...state.days];
-    } else if (mode === 'single') {
-        return [document.getElementById("deleteSingleDay").value];
-    } else {
-        const checkboxes = document.querySelectorAll('#deleteCustomDays input[type="checkbox"]:checked');
-        return Array.from(checkboxes).map(cb => cb.value);
-    }
-}
-
-function deleteTimePeriod(){
-    const start = document.getElementById("deleteStart").value;
-    const end = document.getElementById("deleteEnd").value;
-    
-    if(!start || !end || timeToMinutes(start) >= timeToMinutes(end)){
-        showToast(T[state.language].cancel || "Invalid time.");
-        return;
-    }
-
-    const selectedDays = getSelectedDaysForDelete();
-    if(selectedDays.length === 0) return;
-
-    // Check conflict only for selected days
-    const conflict = state.lessons.some(lesson => {
-        const timeConflict = timeToMinutes(lesson.start) < timeToMinutes(end) && timeToMinutes(lesson.end) > timeToMinutes(start);
-        if(!timeConflict) return false;
-        return selectedDays.includes(lesson.day);
-    });
-
-    if(conflict){
-        showToast(T[state.language].deleteConflict);
-        return;
-    }
-
-    state.deletedPeriods.push({ start, end, days: selectedDays });
-    
-    renderTimetable();
-    updateDeletedList();
-    saveData(false);
-    showToast(T[state.language].periodDeleted);
-}
-
-function isDeleted(start, end, day){
-    const s = timeToMinutes(start);
-    const e = timeToMinutes(end);
-
-    return state.deletedPeriods.some(period => {
-        const timeMatch = (s >= timeToMinutes(period.start) && e <= timeToMinutes(period.end));
-        if(!timeMatch) return false;
-        
-        // Backward compatibility: if no days array, assume all days
-        if(!period.days || period.days.length === 0) return true;
-        
-        return period.days.includes(day);
-    });
-}
-
-function restorePeriod(index){
-    state.deletedPeriods.splice(index, 1);
-    renderTimetable();
-    updateDeletedList();
-    saveData(false);
-}
-
-function updateDeletedList(){
-    const container = document.getElementById("deletedList");
-    container.innerHTML = "";
-    
-    state.deletedPeriods.forEach((period, index) => {
-        const div = document.createElement("div");
-        div.className = "deleted-item";
-        
-        // Show context of days if not all days
-        let dayContext = "";
-        if(period.days && period.days.length < state.days.length) {
-            dayContext = ` (${period.days.join(', ')})`;
-        }
-
-        div.innerHTML = `
-            ${period.start} → ${period.end}${dayContext}
-            <button onclick="restorePeriod(${index})">×</button>
-        `;
-        container.appendChild(div);
-    });
-}
-
-/* =========================================================
-   RENDER TIMETABLE
-========================================================= */
-
-function renderTimetable(){
-    state.dayStart = document.getElementById("dayStart").value;
-    state.dayEnd = document.getElementById("dayEnd").value;
-    state.slotDuration = Number(document.getElementById("slotDuration").value);
-    state.orientation = document.getElementById("orientation").value;
-    document.getElementById("printTitle").textContent = state.title || " ";
-
-    if(state.orientation === "horizontal") {
-        renderHorizontal();
-    } else {
-        renderVertical();
-    }
-}
-
-function renderVertical(){
-    const table = document.getElementById("timetable");
-    table.innerHTML = "";
-    const slots = getTimeSlots();
-    
-    const thead = document.createElement("thead");
-    const header = document.createElement("tr");
-    const timeHead = document.createElement("th");
-    timeHead.textContent = "⏰";
-    header.appendChild(timeHead);
-
-    state.days.forEach(day => {
-        const th = document.createElement("th");
-        th.textContent = day;
-        header.appendChild(th);
-    });
-    thead.appendChild(header);
-    table.appendChild(thead);
-
-    const tbody = document.createElement("tbody");
-    const skip = {};
-
-    slots.forEach((slot, index) => {
-        const row = document.createElement("tr");
-        const time = document.createElement("td");
-        time.className = "time-cell";
-        time.innerHTML = `<strong>${slot.start}</strong><br>↓<br>${slot.end}`;
-        row.appendChild(time);
-
-        state.days.forEach((day, dayIndex) => {
-            if(skip[dayIndex]){
-                skip[dayIndex]--;
-                return;
-            }
-
-            const cell = document.createElement("td");
-            cell.className = "day-cell";
-            const lesson = state.lessons.find(l => l.day === day && l.start === slot.start);
-
-            if(lesson){
-                const duration = timeToMinutes(lesson.end) - timeToMinutes(lesson.start);
-                let rows = Math.ceil(duration / Number(state.slotDuration));
-                let possibleRows = 0;
-
-                for(let i=index; i<slots.length; i++){
-                    // Check deletion with 'day' specific context
-                    if(isDeleted(slots[i].start, slots[i].end, day)) break;
-                    if(timeToMinutes(slots[i].start) >= timeToMinutes(lesson.end)) break;
-                    possibleRows++;
-                }
-
-                rows = Math.min(rows, possibleRows);
-                rows = Math.max(1, rows);
-                cell.rowSpan = rows;
-                skip[dayIndex] = rows-1;
-                cell.appendChild(createLesson(lesson));
-            } else {
-                if(isDeleted(slot.start, slot.end, day)){
-                    cell.classList.add("deleted-time");
+        if (firebaseConfig) {
+            try {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                
+                const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+                if (token) {
+                    signInWithCustomToken(auth, token).catch(() => signInAnonymously(auth));
                 } else {
-                    cell.classList.add("empty-cell");
-                    cell.ondblclick = () => {
-                        openLessonModal({ day, start:slot.start, end:slot.end });
-                    };
-                }
-            }
-            row.appendChild(cell);
-        });
-        tbody.appendChild(row);
-    });
-    table.appendChild(tbody);
-}
-
-function renderHorizontal(){
-    const table = document.getElementById("timetable");
-    table.innerHTML = "";
-    const slots = getTimeSlots();
-    
-    const thead = document.createElement("thead");
-    const header = document.createElement("tr");
-    const dayHead = document.createElement("th");
-    dayHead.textContent = "📅";
-    header.appendChild(dayHead);
-
-    slots.forEach(slot => {
-        const th = document.createElement("th");
-        th.innerHTML = `${slot.start}<br>↓<br>${slot.end}`;
-        header.appendChild(th);
-    });
-    thead.appendChild(header);
-    table.appendChild(thead);
-
-    const tbody = document.createElement("tbody");
-
-    state.days.forEach(day => {
-        const row = document.createElement("tr");
-        const dayCell = document.createElement("td");
-        dayCell.className = "time-cell";
-        dayCell.innerHTML = `<strong>${day}</strong>`;
-        row.appendChild(dayCell);
-
-        let skip = 0;
-        slots.forEach((slot, index) => {
-            if(skip > 0){
-                skip--;
-                return;
-            }
-
-            const cell = document.createElement("td");
-            cell.className = "day-cell";
-            const lesson = state.lessons.find(l => l.day === day && l.start === slot.start);
-
-            if(lesson){
-                const duration = timeToMinutes(lesson.end) - timeToMinutes(lesson.start);
-                let columns = Math.ceil(duration / Number(state.slotDuration));
-                let possible = 0;
-
-                for(let i=index; i<slots.length; i++){
-                    if(isDeleted(slots[i].start, slots[i].end, day)) break;
-                    if(timeToMinutes(slots[i].start) >= timeToMinutes(lesson.end)) break;
-                    possible++;
+                    signInAnonymously(auth).catch(err => console.error("Anon auth error", err));
                 }
 
-                columns = Math.min(columns, possible);
-                columns = Math.max(1, columns);
-                cell.colSpan = columns;
-                skip = columns-1;
-                cell.appendChild(createLesson(lesson));
-            } else {
-                if(isDeleted(slot.start, slot.end, day)){
-                    cell.classList.add("deleted-time");
-                } else {
-                    cell.classList.add("empty-cell");
-                    cell.ondblclick = () => {
-                        openLessonModal({ day, start:slot.start, end:slot.end });
-                    };
-                }
-            }
-            row.appendChild(cell);
-        });
-        tbody.appendChild(row);
-    });
-    table.appendChild(tbody);
-}
-
-function createLesson(lesson){
-    const div = document.createElement("div");
-    div.className = "lesson";
-    const duration = timeToMinutes(lesson.end) - timeToMinutes(lesson.start);
-    if(duration >= 120) div.classList.add("lesson-long");
-    
-    const color = lesson.color || getSubjectColor(lesson.subject);
-    div.style.background = color;
-    div.style.color = "#000000";
-
-    let info = "";
-    if(lesson.teacher) info += escapeHTML(lesson.teacher);
-    if(lesson.location){
-        if(info) info += " • ";
-        info += escapeHTML(lesson.location);
-    }
-
-    div.innerHTML = `
-        <div class="lesson-name">${escapeHTML(lesson.subject)}</div>
-        <div class="lesson-time">${lesson.start} – ${lesson.end}</div>
-        ${info ? `<div class="lesson-info">${info}</div>` : ""}
-    `;
-    div.onclick = () => openLessonModal(lesson);
-    return div;
-}
-
-/* =========================================================
-   SUBJECT MANAGEMENT (LIBRARY)
-========================================================= */
-
-function getSubjectColor(subject){
-    if(!state.colors[subject]){
-        state.colors[subject] = randomPastel();
-    }
-    return state.colors[subject];
-}
-
-function randomPastel(){
-    const colors = ["#c9dcf2","#f3c7d9","#d9c8ee","#e9b6b6","#f4df9e","#d9c5b2","#a8c7b0","#b4c9e8","#c8dfc5","#e7c9e5","#c8e2df"];
-    return colors[Math.floor(Math.random()*colors.length)];
-}
-
-function renderSubjectColors(){
-    const container = document.getElementById("subjectList");
-    container.innerHTML = "";
-    const subjects = Object.keys(state.colors);
-
-    // Sync any untracked subjects from lessons
-    state.lessons.forEach(lesson => {
-        if(!subjects.includes(lesson.subject)){
-            subjects.push(lesson.subject);
-            state.colors[lesson.subject] = lesson.color || randomPastel();
-        }
-    });
-
-    subjects.forEach(subject => {
-        const item = document.createElement("div");
-        item.className = "subject-item";
-        item.title = T[state.language].editSubject;
-        
-        item.onclick = () => openSubjectModal(subject, state.colors[subject]);
-
-        const colorCircle = document.createElement("div");
-        colorCircle.className = "color-circle";
-        colorCircle.style.backgroundColor = state.colors[subject];
-
-        const name = document.createElement("span");
-        name.textContent = subject;
-
-        item.appendChild(colorCircle);
-        item.appendChild(name);
-        container.appendChild(item);
-    });
-
-    updateSubjectOptions();
-}
-
-function openSubjectModal(subjectName = null, color = null) {
-    editingSubjectOldName = subjectName;
-    document.getElementById("subjectModal").classList.add("show");
-    
-    if(subjectName) {
-        document.getElementById("subjectModalTitle").textContent = T[state.language].editSubject;
-        document.getElementById("modalSubjectName").value = subjectName;
-        document.getElementById("modalSubjectColor").value = color || getSubjectColor(subjectName);
-        document.getElementById("deleteSubjectBtn").style.display = "inline-block";
-    } else {
-        document.getElementById("subjectModalTitle").textContent = T[state.language].addSubject;
-        document.getElementById("modalSubjectName").value = "";
-        document.getElementById("modalSubjectColor").value = randomPastel();
-        document.getElementById("deleteSubjectBtn").style.display = "none";
-    }
-    updateSubjectColorText();
-}
-
-function closeSubjectModal() {
-    document.getElementById("subjectModal").classList.remove("show");
-    editingSubjectOldName = null;
-}
-
-document.getElementById("modalSubjectColor").addEventListener("input", updateSubjectColorText);
-function updateSubjectColorText() {
-    document.getElementById("modalSubjectColorHex").textContent = document.getElementById("modalSubjectColor").value;
-}
-
-function saveSubject() {
-    const newName = document.getElementById("modalSubjectName").value.trim();
-    const newColor = document.getElementById("modalSubjectColor").value;
-
-    if(!newName) return;
-
-    if(editingSubjectOldName && editingSubjectOldName !== newName) {
-        // Update old references in lessons
-        state.lessons.forEach(l => {
-            if(l.subject === editingSubjectOldName) {
-                l.subject = newName;
-                l.color = newColor;
-            }
-        });
-        delete state.colors[editingSubjectOldName];
-    } else {
-        // Just update colors for existing lessons matching name
-        state.lessons.forEach(l => {
-            if(l.subject === newName) l.color = newColor;
-        });
-    }
-
-    state.colors[newName] = newColor;
-    
-    renderSubjectColors();
-    renderTimetable();
-    saveData(false);
-    closeSubjectModal();
-    showToast(T[state.language].subjectSaved);
-}
-
-function deleteCurrentSubject() {
-    if(!editingSubjectOldName) return;
-    delete state.colors[editingSubjectOldName];
-    // We intentionally don't delete the lessons so data isn't lost, just the library item.
-    
-    renderSubjectColors();
-    saveData(false);
-    closeSubjectModal();
-    showToast(T[state.language].subjectDeleted);
-}
-
-function updateSubjectOptions(){
-    const list = document.getElementById("subjectOptions");
-    if(!list) return;
-    list.innerHTML = "";
-    Object.keys(state.colors).forEach(subject => {
-        const option = document.createElement("option");
-        option.value = subject;
-        list.appendChild(option);
-    });
-}
-
-// AUTO-LINK COLOR IN LESSON MODAL
-document.getElementById("lessonSubject").addEventListener("input", function() {
-    const val = this.value.trim();
-    if(state.colors && state.colors[val]) {
-        document.getElementById("lessonColor").value = state.colors[val];
-        updateColorText();
-    }
-});
-
-/* =========================================================
-   LESSON MODAL
-========================================================= */
-
-function openLessonModal(preset = null){
-    editingLessonId = preset && preset.id ? preset.id : null;
-    document.getElementById("lessonModal").classList.add("show");
-    const daySelect = document.getElementById("lessonDay");
-    daySelect.innerHTML = "";
-
-    state.days.forEach(day => {
-        const option = document.createElement("option");
-        option.value = day;
-        option.textContent = day;
-        daySelect.appendChild(option);
-    });
-
-    document.getElementById("deleteLessonBtn").style.display = editingLessonId ? "inline-block" : "none";
-
-    if(editingLessonId){
-        const lesson = state.lessons.find(l => l.id === editingLessonId);
-        fillModal(lesson);
-    } else {
-        document.getElementById("modalTitle").textContent = T[state.language].addLesson || "Ajouter une séance";
-        document.getElementById("lessonDay").value = preset?.day || state.days[0];
-        document.getElementById("lessonSubject").value = "";
-        document.getElementById("lessonStart").value = preset?.start || state.dayStart;
-        document.getElementById("lessonEnd").value = preset?.end || minutesToTime(timeToMinutes(preset?.start || state.dayStart) + Number(state.slotDuration));
-        document.getElementById("lessonTeacher").value = "";
-        document.getElementById("lessonLocation").value = "";
-        document.getElementById("lessonColor").value = randomPastel();
-    }
-    updateColorText();
-}
-
-function fillModal(lesson){
-    document.getElementById("modalTitle").textContent = T[state.language].editSubject || "Modifier la séance"; // Repurposed loosely for title
-    document.getElementById("lessonDay").value = lesson.day;
-    document.getElementById("lessonSubject").value = lesson.subject;
-    document.getElementById("lessonStart").value = lesson.start;
-    document.getElementById("lessonEnd").value = lesson.end;
-    document.getElementById("lessonTeacher").value = lesson.teacher || "";
-    document.getElementById("lessonLocation").value = lesson.location || "";
-    document.getElementById("lessonColor").value = lesson.color || getSubjectColor(lesson.subject);
-}
-
-function closeLessonModal(){
-    document.getElementById("lessonModal").classList.remove("show");
-    editingLessonId = null;
-}
-
-document.getElementById("lessonColor").addEventListener("input", updateColorText);
-
-function updateColorText(){
-    document.getElementById("colorHex").textContent = document.getElementById("lessonColor").value;
-}
-
-function saveLesson(){
-    const day = document.getElementById("lessonDay").value;
-    const subject = document.getElementById("lessonSubject").value.trim();
-    const start = document.getElementById("lessonStart").value;
-    const end = document.getElementById("lessonEnd").value;
-    const teacher = document.getElementById("lessonTeacher").value.trim();
-    const location = document.getElementById("lessonLocation").value.trim();
-    const color = document.getElementById("lessonColor").value;
-
-    if(!subject){
-        showToast("Veuillez entrer une matière."); return;
-    }
-    if(!start || !end || timeToMinutes(start) >= timeToMinutes(end)){
-        showToast("Vérifiez les horaires."); return;
-    }
-
-    const deletedConflict = state.deletedPeriods.some(period => {
-        const timeConflict = (timeToMinutes(start) < timeToMinutes(period.end) && timeToMinutes(end) > timeToMinutes(period.start));
-        if(!timeConflict) return false;
-        if(!period.days || period.days.length === 0) return true;
-        return period.days.includes(day);
-    });
-
-    if(deletedConflict){
-        showToast("Cette séance traverse une période supprimée."); return;
-    }
-
-    const skippedConflict = (state.skippedPeriods || []).some(period =>
-        timeToMinutes(start) < timeToMinutes(period.end) &&
-        timeToMinutes(end) > timeToMinutes(period.start)
-    );
-    if(skippedConflict){
-        showToast(T[state.language].skipConflict); return;
-    }
-
-    const overlap = state.lessons.some(existing => {
-        if(editingLessonId && existing.id === editingLessonId) return false;
-        if(existing.day !== day) return false;
-        return (timeToMinutes(start) < timeToMinutes(existing.end) && timeToMinutes(end) > timeToMinutes(existing.start));
-    });
-
-    if(overlap){
-        showToast("Cette séance chevauche une autre séance."); return;
-    }
-
-    if(editingLessonId){
-        const lesson = state.lessons.find(l => l.id === editingLessonId);
-        if(lesson){
-            lesson.day = day; lesson.subject = subject; lesson.start = start;
-            lesson.end = end; lesson.teacher = teacher; lesson.location = location;
-            lesson.color = color;
-        }
-    } else {
-        state.lessons.push({
-            id: Date.now().toString(),
-            day, subject, start, end, teacher, location, color
-        });
-    }
-
-    // Register or update color in library
-    state.colors[subject] = color;
-    
-    renderSubjectColors();
-    renderTimetable();
-    saveData(false);
-    closeLessonModal();
-    showToast(T[state.language].confirm + " ✓");
-}
-
-function deleteCurrentLesson(){
-    if(!editingLessonId) return;
-    state.lessons = state.lessons.filter(lesson => lesson.id !== editingLessonId);
-    renderTimetable();
-    renderSubjectColors();
-    saveData(false);
-    closeLessonModal();
-    showToast(T[state.language].delete + " ✓");
-}
-
-/* =========================================================
-   NUMBER OF DAYS & DATA
-========================================================= */
-
-function changeNumberOfDays(){
-    const number = Number(document.getElementById("numberDays").value);
-    state.numberDays = number;
-    state.lessons = state.lessons.filter(lesson => DAYS[state.language].slice(0,number).includes(lesson.day));
-    state.days = DAYS[state.language].slice(0,number);
-    
-    updateDeleteDaysUI();
-    renderTimetable();
-    renderSubjectColors();
-    saveData(false);
-}
-
-function saveData(show=true){
-    state.title = document.getElementById("tableTitle").value;
-    state.orientation = document.getElementById("orientation").value;
-    state.dayStart = document.getElementById("dayStart").value;
-    state.dayEnd = document.getElementById("dayEnd").value;
-    state.slotDuration = Number(document.getElementById("slotDuration").value);
-
-    localStorage.setItem("YAS_TIMETABLE_DATA", JSON.stringify(state));
-    if(show) showToast("Tableau sauvegardé ✓");
-}
-
-function loadData(){
-    const saved = localStorage.getItem("YAS_TIMETABLE_DATA");
-    if(!saved){
-        createDaysIfNecessary();
-        return;
-    }
-    try{
-        const data = JSON.parse(saved);
-        state = Object.assign(state, data);
-    }catch(error){
-        console.error(error);
-        createDaysIfNecessary();
-    }
-}
-
-function newTable(){
-    state.lessons = [];
-    state.deletedPeriods = [];
-    state.skippedPeriods = [];
-    saveData(false);
-    renderTimetable();
-    updateDeletedList();
-    updateSkippedList();
-}
-
-/* =========================================================
-   EXPORT PNG & PDF
-========================================================= */
-
-async function exportPNG(){
-    const table = document.getElementById("timetable");
-    if(!table || !table.rows.length){ showToast("Le tableau est vide."); return; }
-    try {
-        const tableRect = table.getBoundingClientRect();
-        const width = Math.ceil(Math.max(table.scrollWidth, tableRect.width));
-        const height = Math.ceil(Math.max(table.scrollHeight, tableRect.height));
-        const scale = 2; const titleHeight = 58;
-
-        const canvas = document.createElement("canvas");
-        canvas.width = width * scale; canvas.height = (height + titleHeight) * scale;
-        const ctx = canvas.getContext("2d");
-        if(!ctx) throw new Error("Canvas indisponible");
-
-        ctx.scale(scale, scale);
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, width, height + titleHeight);
-
-        ctx.fillStyle = "#000000"; ctx.font = "bold 26px Arial, sans-serif";
-        ctx.textAlign = "center"; ctx.textBaseline = "middle";
-        ctx.fillText(state.title || "YAS! Timetable", width / 2, 28);
-
-        function box(el){
-            const r = el.getBoundingClientRect();
-            return {x:r.left-tableRect.left, y:r.top-tableRect.top+titleHeight, w:r.width, h:r.height};
-        }
-        function wrapped(text, x, y, maxW, lineH, maxLines=3){
-            const words = String(text || "").split(/\s+/).filter(Boolean);
-            const lines = []; let line = "";
-            for(const word of words){
-                const next = line ? line + " " + word : word;
-                if(ctx.measureText(next).width > maxW && line){ lines.push(line); line = word; } 
-                else line = next;
-            }
-            if(line) lines.push(line);
-            const visible = lines.slice(0, maxLines);
-            const top = y - (visible.length - 1) * lineH / 2;
-            visible.forEach((t,i)=>ctx.fillText(t, x, top + i*lineH));
-        }
-
-        table.querySelectorAll("th, td").forEach(cell=>{
-            const r = box(cell); const cs = getComputedStyle(cell);
-            ctx.fillStyle = cs.backgroundColor && cs.backgroundColor !== "rgba(0, 0, 0, 0)" ? cs.backgroundColor : "#ffffff";
-            ctx.fillRect(r.x, r.y, r.w, r.h);
-            ctx.strokeStyle = "#d9d2df"; ctx.lineWidth = 1; ctx.strokeRect(r.x, r.y, r.w, r.h);
-
-            const lesson = cell.querySelector(":scope > .lesson");
-            if(lesson){
-                const q = box(lesson); const ls = getComputedStyle(lesson);
-                ctx.fillStyle = ls.backgroundColor || "#ffffff";
-                ctx.fillRect(q.x+2, q.y+2, Math.max(0,q.w-4), Math.max(0,q.h-4));
-
-                const name = lesson.querySelector(".lesson-name")?.innerText.trim() || "";
-                const time = lesson.querySelector(".lesson-time")?.innerText.trim() || "";
-                const info = lesson.querySelector(".lesson-info")?.innerText.trim() || "";
-                const lines = [name,time,info].filter(Boolean);
-                const fs = Math.max(9, Math.min(15, q.w/9));
-                const lh = Math.max(12, Math.min(18, q.h/(lines.length+1)));
-                ctx.save();
-                ctx.beginPath(); ctx.rect(q.x+4,q.y+3,Math.max(0,q.w-8),Math.max(0,q.h-6)); ctx.clip();
-                ctx.fillStyle = "#000000"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                lines.forEach((t,i)=>{
-                    ctx.font = i===0 ? `bold ${fs}px Arial, sans-serif` : `${Math.max(9,fs-3)}px Arial, sans-serif`;
-                    wrapped(t,q.x+q.w/2,q.y+q.h/2+(i-(lines.length-1)/2)*lh,q.w-12,lh,2);
+                onAuthStateChanged(auth, (user) => {
+                    currentUser = user;
+                    updateAuthUI();
+                    if (user) {
+                        loadUserData();
+                    }
                 });
-                ctx.restore(); return;
+            } catch (e) {
+                console.error("Firebase init failed", e);
             }
+        }
 
-            const text = (cell.innerText || "").trim();
-            const lines = text.split(/\n/).map(x=>x.trim()).filter(Boolean);
-            ctx.fillStyle = "#000000"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-            ctx.font = cell.tagName === "TH" ? "bold 12px Arial, sans-serif" : "11px Arial, sans-serif";
-            const shown = lines.slice(0, Math.max(1,Math.floor((r.h-4)/14)));
-            shown.forEach((t,i)=>wrapped(t,r.x+r.w/2,r.y+r.h/2+(i-(shown.length-1)/2)*14,r.w-8,14,2));
+        const translations = {
+            en: {
+                subtitle: "Minimalist Timetable Planner",
+                schedule: "Schedule:",
+                newSchedule: "New Schedule",
+                rename: "Rename",
+                delete: "Delete",
+                subjectLibrary: "Subjects Library",
+                settings: "Settings & Hours",
+                breaksAndSkips: "Breaks & Skips",
+                printPdf: "Print / PDF",
+                vertical: "Vertical",
+                horizontal: "Horizontal",
+                resetTable: "Reset Table",
+                addLesson: "Add Lesson",
+                subject: "Subject",
+                startTime: "Start Time",
+                endTime: "End Time",
+                slotSpan: "Duration in Slots (Span)",
+                teacher: "Teacher (Optional)",
+                room: "Room / Location",
+                cancel: "Cancel",
+                save: "Save Lesson",
+                add: "Add",
+                tableTitle: "Table Title",
+                daysCount: "Number of Days (5-7)",
+                slotsCount: "Number of Slots (up to 24)",
+                startTimeSlot: "First Slot Start Time",
+                slotDuration: "Slot Duration (Minutes)",
+                saveSettings: "Save Settings",
+                breaksAndExclusions: "Breaks & Excluded Times",
+                exclusionType: "Type",
+                deletePeriodOpt: "Delete Period (Striped / Blocked)",
+                skipTimeOpt: "Skip Time (Hide Slot Entirely)",
+                slotIndex: "Slot",
+                applyToDays: "Apply To Days",
+                applyExclusion: "Apply Rule",
+                activeExclusions: "Active Restrictions",
+                days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+                toastSaved: "Schedule saved successfully ✓",
+                toastReset: "Schedule reset.",
+                toastDeleted: "Removed restriction.",
+                conflictError: "Conflict: Lesson overlaps with another period or invalid slot span!",
+                signIn: "Sign In",
+                signOut: "Sign Out",
+                allDays: "All Days"
+            },
+            fr: {
+                subtitle: "Planificateur d'emploi du temps",
+                schedule: "Emploi:",
+                newSchedule: "Nouvel Emploi",
+                rename: "Renommer",
+                delete: "Supprimer",
+                subjectLibrary: "Bibliothèque de matières",
+                settings: "Paramètres & Heures",
+                breaksAndSkips: "Pauses & Exclusions",
+                printPdf: "Imprimer / PDF",
+                vertical: "Vertical",
+                horizontal: "Horizontal",
+                resetTable: "Réinitialiser",
+                addLesson: "Ajouter un cours",
+                subject: "Matière",
+                startTime: "Heure de début",
+                endTime: "Heure de fin",
+                slotSpan: "Durée en créneaux (Span)",
+                teacher: "Enseignant (Optionnel)",
+                room: "Salle / Lieu",
+                cancel: "Annuler",
+                save: "Enregistrer",
+                add: "Ajouter",
+                tableTitle: "Titre de l'emploi",
+                daysCount: "Nombre de jours (5-7)",
+                slotsCount: "Nombre de créneaux (jusqu'à 24)",
+                startTimeSlot: "Heure 1er créneau",
+                slotDuration: "Durée (Minutes)",
+                saveSettings: "Enregistrer",
+                breaksAndExclusions: "Pauses & Temps exclus",
+                exclusionType: "Type",
+                deletePeriodOpt: "Supprimer période (Rayé / Bloqué)",
+                skipTimeOpt: "Masquer le créneau",
+                slotIndex: "Créneau",
+                applyToDays: "Appliquer aux jours",
+                applyExclusion: "Appliquer",
+                activeExclusions: "Restrictions actives",
+                days: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
+                toastSaved: "Emploi sauvegardé avec succès ✓",
+                toastReset: "Emploi réinitialisé.",
+                toastDeleted: "Restriction supprimée.",
+                conflictError: "Conflit : Le cours chevauche une autre période !",
+                signIn: "Connexion",
+                signOut: "Déconnexion",
+                allDays: "Tous les jours"
+            },
+            es: {
+                subtitle: "Planificador de horarios",
+                schedule: "Horario:",
+                newSchedule: "Nuevo",
+                rename: "Renombrar",
+                delete: "Borrar",
+                subjectLibrary: "Biblioteca de Materias",
+                settings: "Ajustes y Horas",
+                breaksAndSkips: "Pausas y Exclusiones",
+                printPdf: "Imprimir / PDF",
+                vertical: "Vertical",
+                horizontal: "Horizontal",
+                resetTable: "Reiniciar",
+                addLesson: "Añadir Clase",
+                subject: "Materia",
+                startTime: "Hora inicio",
+                endTime: "Hora fin",
+                slotSpan: "Duración en franjas (Span)",
+                teacher: "Profesor (Opcional)",
+                room: "Aula / Ubicación",
+                cancel: "Cancelar",
+                save: "Guardar",
+                add: "Añadir",
+                tableTitle: "Título del Horario",
+                daysCount: "Días (5-7)",
+                slotsCount: "Franjas (hasta 24)",
+                startTimeSlot: "Inicio 1ª franja",
+                slotDuration: "Duración (Minutos)",
+                saveSettings: "Guardar Ajustes",
+                breaksAndExclusions: "Pausas y Tiempos Excluidos",
+                exclusionType: "Tipo",
+                deletePeriodOpt: "Eliminar Período (Rayado)",
+                skipTimeOpt: "Ocultar Franja",
+                slotIndex: "Franja",
+                applyToDays: "Aplicar a Días",
+                applyExclusion: "Aplicar",
+                activeExclusions: "Restricciones Activas",
+                days: ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
+                toastSaved: "¡Horario guardado con éxito ✓!",
+                toastReset: "Horario reiniciado.",
+                toastDeleted: "Restricción eliminada.",
+                conflictError: "¡Conflicto: La clase se solapa con otro período!",
+                signIn: "Conectar",
+                signOut: "Salir",
+                allDays: "Todos los días"
+            },
+            ar: {
+                subtitle: "منظم الجداول الدراسية البسيط",
+                schedule: "الجدول:",
+                newSchedule: "جدول جديد",
+                rename: "إعادة تسمية",
+                delete: "حذف",
+                subjectLibrary: "مكتبة المواد",
+                settings: "الإعدادات والساعات",
+                breaksAndSkips: "الاستراحات والأوقات المستبعدة",
+                printPdf: "طباعة / PDF",
+                vertical: "عمودي",
+                horizontal: "أفقي",
+                resetTable: "إعادة تعيين",
+                addLesson: "إضافة حصة",
+                subject: "المادة",
+                startTime: "وقت البدء",
+                endTime: "وقت الانتهاء",
+                slotSpan: "عدد الحصص (المدة)",
+                teacher: "الأستاذ (اختياري)",
+                room: "القاعة / المكان",
+                cancel: "إلغاء",
+                save: "حفظ الحصة",
+                add: "إضافة",
+                tableTitle: "عنوان الجدول",
+                daysCount: "عدد الأيام (5-7)",
+                slotsCount: "عدد الحصص (حتى 24)",
+                startTimeSlot: "وقت بدء الحصة الأولى",
+                slotDuration: "مدة الحصة (دقائق)",
+                saveSettings: "حفظ الإعدادات",
+                breaksAndExclusions: "الاستراحات والأوقات الملغاة",
+                exclusionType: "النوع",
+                deletePeriodOpt: "حذف فترة (مخططة / محظورة)",
+                skipTimeOpt: "إخفاء الحصة تماماً",
+                slotIndex: "الحصة",
+                applyToDays: "تطبيق على الأيام",
+                applyExclusion: "تطبيق القاعدة",
+                activeExclusions: "القيود النشطة",
+                days: ["الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت", "الأحد"],
+                toastSaved: "تم حفظ الجدول بنجاح ✓",
+                toastReset: "تمت إعادة تعيين الجدول.",
+                toastDeleted: "تم إزالة القيد.",
+                conflictError: "تعارض: الحصة تتداخل مع فترة أخرى!",
+                signIn: "تسجيل الدخول",
+                signOut: "تسجيل الخروج",
+                allDays: "كل الأيام"
+            },
+            darija: {
+                subtitle: "منظم جدول التوقيت دير ياس!",
+                schedule: "الجدول:",
+                newSchedule: "جدول جديد",
+                rename: "بدل سمية",
+                delete: "مسح",
+                subjectLibrary: "مكتبة المواد",
+                settings: "الإعدادات والسوايع",
+                breaksAndSkips: "الاستراحات والأوقات المحيدة",
+                printPdf: "إبريمي / PDF",
+                vertical: "عمودي",
+                horizontal: "أفقي",
+                resetTable: "مسح الكل",
+                addLesson: "زيد حصة",
+                subject: "المادة",
+                startTime: "وقت البداية",
+                endTime: "وقت النهاية",
+                slotSpan: "شحال من حصة فـ المدة",
+                teacher: "الأستاذ (اختياري)",
+                room: "القاعة / بلاصة",
+                cancel: "إلغاء",
+                save: "حفظ",
+                add: "زيد",
+                tableTitle: "عنوان الجدول",
+                daysCount: "عدد الأيام (5-7)",
+                slotsCount: "عدد الحصص (حتى 24)",
+                startTimeSlot: "وقت بداية حصة 1",
+                slotDuration: "مدة الحصة (دقيقة)",
+                saveSettings: "حفظ الإعدادات",
+                breaksAndExclusions: "الاستراحات والأوقات المحذوفة",
+                exclusionType: "النوع",
+                deletePeriodOpt: "حذف فترة (مخططة)",
+                skipTimeOpt: "إخفاء الحصة كلياً",
+                slotIndex: "الحصة",
+                applyToDays: "تطبيق على الأيام",
+                applyExclusion: "تطبيق",
+                activeExclusions: "القيود الحالية",
+                days: ["الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت", "الأحد"],
+                toastSaved: "تفظ الجدول بنجاح ✓",
+                toastReset: "تولى الجدول مسح كلي.",
+                toastDeleted: "تحيد القيد بنجاح.",
+                conflictError: "خطأ: الحصة متداخلة مع وقت آخر!",
+                signIn: "دخل بـ Google",
+                signOut: "خروج",
+                allDays: "جميع الأيام"
+            }
+        };
+
+        let state = {
+            lang: 'en',
+            viewMode: 'vertical',
+            activeTableId: 'default-1',
+            timetables: {
+                'default-1': {
+                    id: 'default-1',
+                    title: 'My Weekly Schedule',
+                    daysCount: 5,
+                    slotsCount: 8,
+                    startTime: '08:00',
+                    slotDuration: 60,
+                    lessons: [], // { id, dayIndex, slotIndex, span, subject, startTime, endTime, teacher, room }
+                    exclusions: []
+                }
+            },
+            subjects: [
+                { name: 'Mathematics', color: '#bae1ff' },
+                { name: 'Physics', color: '#ffd1dc' },
+                { name: 'Literature', color: '#ffffba' },
+                { name: 'Computer Science', color: '#baffc9' },
+                { name: 'History', color: '#e8c5ff' },
+                { name: 'English', color: '#ffdfba' }
+            ]
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadLocalState();
+            setupEventListeners();
+            renderAll();
         });
 
-        canvas.toBlob(blob=>{
-            if(!blob){ showToast("Impossible de créer l’image."); return; }
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.download = "YAS-Timetable.png";
-            link.href = url; link.click();
-            setTimeout(()=>URL.revokeObjectURL(url),1000);
-            showToast("PNG exporté ✓");
-        },"image/png");
-    } catch(error){ console.error(error); showToast("Erreur pendant l’export PNG."); }
-}
-
-function printPDF(){ window.print(); }
-
-function escapeHTML(text){
-    return String(text).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
-}
-
-function showToast(message){
-    const toast = document.getElementById("toast");
-    toast.textContent = message;
-    toast.classList.add("show");
-    setTimeout(()=>{ toast.classList.remove("show"); }, 2300);
-}
-
-document.querySelectorAll(".modal-overlay").forEach(el => {
-    el.addEventListener("click", function(event){
-        if(event.target === this){
-            closeLessonModal();
-            closeSubjectModal();
+        function loadLocalState() {
+            const saved = localStorage.getItem('yasschedule_state_v2.5');
+            if (saved) {
+                try {
+                    state = JSON.parse(saved);
+                    // Ensure all lessons have a span property defaulting to 1
+                    Object.values(state.timetables).forEach(t => {
+                        if (t.lessons) {
+                            t.lessons.forEach(l => {
+                                if (!l.span) l.span = 1;
+                            });
+                        }
+                    });
+                } catch (e) {
+                    console.error("Local state parse error", e);
+                }
+            }
         }
-    });
-});
 
-document.addEventListener("keydown", event => {
-    if(event.key === "Escape"){
-        closeLessonModal();
-        closeSubjectModal();
-    }
-});
-</script>
+        function saveState() {
+            localStorage.setItem('yasschedule_state_v2.5', JSON.stringify(state));
+            if (db && currentUser) {
+                const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'data', 'timetable_state_v2.5');
+                setDoc(docRef, state).catch(err => console.error("Firestore save error", err));
+            }
+            showToast(translations[state.lang].toastSaved);
+        }
+
+        function loadUserData() {
+            if (!db || !currentUser) return;
+            const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'data', 'timetable_state_v2.5');
+            getDoc(docRef).then(docSnap => {
+                if (docSnap.exists()) {
+                    state = docSnap.data();
+                    renderAll();
+                }
+            }).catch(err => console.error("Firestore read error", err));
+        }
+
+        function updateAuthUI() {
+            const btnText = document.getElementById('authBtnText');
+            if (currentUser && !currentUser.isAnonymous) {
+                btnText.textContent = currentUser.displayName || translations[state.lang].signOut;
+            } else {
+                btnText.textContent = translations[state.lang].signIn;
+            }
+        }
+
+        function setupEventListeners() {
+            document.getElementById('langSelect').value = state.lang;
+            document.getElementById('langSelect').addEventListener('change', (e) => {
+                state.lang = e.target.value;
+                document.documentElement.setAttribute('dir', ['ar', 'darija'].includes(state.lang) ? 'rtl' : 'ltr');
+                renderAll();
+            });
+
+            document.getElementById('themeToggleBtn').addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+            });
+
+            document.getElementById('authBtn').addEventListener('click', async () => {
+                if (!auth) {
+                    showToast("Cloud authentication not initialized.");
+                    return;
+                }
+                if (currentUser && !currentUser.isAnonymous) {
+                    signOut(auth).then(() => {
+                        signInAnonymously(auth);
+                        showToast("Signed out.");
+                    });
+                } else {
+                    const provider = new GoogleAuthProvider();
+                    try {
+                        await signInWithPopup(auth, provider);
+                        showToast("Successfully signed in with Google ✓");
+                    } catch (e) {
+                        console.error("Google sign in error", e);
+                        showToast("Sign in failed or cancelled.");
+                    }
+                }
+            });
+
+            document.getElementById('viewModeVertical').addEventListener('click', () => {
+                state.viewMode = 'vertical';
+                renderAll();
+            });
+            document.getElementById('viewModeHorizontal').addEventListener('click', () => {
+                state.viewMode = 'horizontal';
+                renderAll();
+            });
+
+            document.getElementById('timetableSelector').addEventListener('change', (e) => {
+                state.activeTableId = e.target.value;
+                renderAll();
+            });
+
+            document.getElementById('newTimetableBtn').addEventListener('click', () => {
+                const name = prompt("Enter new timetable name:", "My Schedule " + (Object.keys(state.timetables).length + 1));
+                if (name) {
+                    const id = 'table_' + Date.now();
+                    state.timetables[id] = {
+                        id,
+                        title: name,
+                        daysCount: 5,
+                        slotsCount: 8,
+                        startTime: '08:00',
+                        slotDuration: 60,
+                        lessons: [],
+                        exclusions: []
+                    };
+                    state.activeTableId = id;
+                    saveState();
+                    renderAll();
+                }
+            });
+
+            document.getElementById('renameTimetableBtn').addEventListener('click', () => {
+                const t = state.timetables[state.activeTableId];
+                if (!t) return;
+                const name = prompt("Rename timetable:", t.title);
+                if (name) {
+                    t.title = name;
+                    saveState();
+                    renderAll();
+                }
+            });
+
+            document.getElementById('deleteTimetableBtn').addEventListener('click', () => {
+                if (Object.keys(state.timetables).length <= 1) {
+                    showToast("Cannot delete the only remaining timetable.");
+                    return;
+                }
+                if (confirm("Are you sure you want to delete this timetable?")) {
+                    delete state.timetables[state.activeTableId];
+                    state.activeTableId = Object.keys(state.timetables)[0];
+                    saveState();
+                    renderAll();
+                }
+            });
+
+            document.getElementById('resetTableBtn').addEventListener('click', () => {
+                if (confirm("Reset all lessons and exclusions for this timetable?")) {
+                    const t = state.timetables[state.activeTableId];
+                    t.lessons = [];
+                    t.exclusions = [];
+                    saveState();
+                    renderAll();
+                    showToast(translations[state.lang].toastReset);
+                }
+            });
+
+            document.getElementById('openSubjectsBtn').addEventListener('click', () => openModal('subjectsModal'));
+            document.getElementById('openSettingsBtn').addEventListener('click', () => {
+                populateSettingsForm();
+                openModal('settingsModal');
+            });
+            document.getElementById('openExcludedBtn').addEventListener('click', () => {
+                populateExcludedModal();
+                openModal('excludedModal');
+            });
+
+            document.getElementById('subjectForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('newSubjectName').value.trim();
+                const color = document.getElementById('newSubjectColor').value;
+                if (name) {
+                    const existing = state.subjects.find(s => s.name.toLowerCase() === name.toLowerCase());
+                    if (existing) {
+                        existing.color = color;
+                    } else {
+                        state.subjects.push({ name, color });
+                    }
+                    document.getElementById('newSubjectName').value = '';
+                    saveState();
+                    renderSubjectsList();
+                    renderAll();
+                }
+            });
+
+            document.getElementById('settingsForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const t = state.timetables[state.activeTableId];
+                t.title = document.getElementById('settingTitleInput').value;
+                t.daysCount = parseInt(document.getElementById('settingDaysCount').value);
+                t.slotsCount = parseInt(document.getElementById('settingSlotsCount').value);
+                t.startTime = document.getElementById('settingStartTime').value;
+                t.slotDuration = parseInt(document.getElementById('settingSlotDuration').value);
+                
+                closeModal('settingsModal');
+                saveState();
+                renderAll();
+            });
+
+            document.getElementById('excludeForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const t = state.timetables[state.activeTableId];
+                const type = document.getElementById('excludeType').value;
+                const slotIndex = parseInt(document.getElementById('excludeSlotIndex').value);
+                
+                const checkboxes = document.querySelectorAll('.exclude-day-cb:checked');
+                const days = Array.from(checkboxes).map(cb => parseInt(cb.value));
+
+                if (days.length === 0) {
+                    showToast("Please select at least one day.");
+                    return;
+                }
+
+                t.exclusions.push({
+                    id: 'exc_' + Date.now(),
+                    type,
+                    slotIndex,
+                    days
+                });
+
+                closeModal('excludedModal');
+                saveState();
+                renderAll();
+            });
+
+            document.getElementById('lessonForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const t = state.timetables[state.activeTableId];
+                const id = document.getElementById('lessonId').value;
+                const dayIndex = parseInt(document.getElementById('lessonDay').value);
+                const slotIndex = parseInt(document.getElementById('lessonTimeSlotIndex').value);
+                const span = parseInt(document.getElementById('lessonSlotSpan').value);
+                const subject = document.getElementById('lessonSubject').value.trim();
+                const startTime = document.getElementById('lessonStartTime').value;
+                const endTime = document.getElementById('lessonEndTime').value;
+                const teacher = document.getElementById('lessonTeacher').value;
+                const room = document.getElementById('lessonRoom').value;
+
+                // Validate that the lesson span doesn't exceed available slots
+                if (slotIndex + span > t.slotsCount) {
+                    showToast("Error: Lesson span exceeds total slots available in the schedule.");
+                    return;
+                }
+
+                // Conflict detection check: check if any slot in [slotIndex, slotIndex + span - 1] overlaps with another lesson or exclusion
+                for (let i = 0; i < span; i++) {
+                    const checkSlot = slotIndex + i;
+                    // Check exclusion
+                    const hasExclusion = t.exclusions.some(exc => exc.slotIndex === checkSlot && exc.days.includes(dayIndex));
+                    if (hasExclusion) {
+                        showToast(translations[state.lang].conflictError);
+                        return;
+                    }
+                    // Check other lessons
+                    const conflict = t.lessons.find(l => {
+                        if (l.id === id) return false;
+                        if (l.dayIndex !== dayIndex) return false;
+                        const lStart = l.slotIndex;
+                        const lEnd = l.slotIndex + (l.span || 1) - 1;
+                        return checkSlot >= lStart && checkSlot <= lEnd;
+                    });
+                    if (conflict) {
+                        showToast(translations[state.lang].conflictError);
+                        return;
+                    }
+                }
+
+                if (id) {
+                    const l = t.lessons.find(item => item.id === id);
+                    if (l) {
+                        l.subject = subject;
+                        l.startTime = startTime;
+                        l.endTime = endTime;
+                        l.span = span;
+                        l.teacher = teacher;
+                        l.room = room;
+                    }
+                } else {
+                    t.lessons.push({
+                        id: 'lesson_' + Date.now(),
+                        dayIndex,
+                        slotIndex,
+                        span,
+                        subject,
+                        startTime,
+                        endTime,
+                        teacher,
+                        room
+                    });
+                }
+
+                if (!state.subjects.some(s => s.name.toLowerCase() === subject.toLowerCase())) {
+                    const pastelColors = ['#ffd1dc', '#bae1ff', '#ffffba', '#baffc9', '#e8c5ff', '#ffdfba'];
+                    const randomColor = pastelColors[Math.floor(Math.random() * pastelColors.length)];
+                    state.subjects.push({ name: subject, color: randomColor });
+                }
+
+                closeModal('lessonModal');
+                saveState();
+                renderAll();
+            });
+
+            document.getElementById('deleteLessonBtn').addEventListener('click', () => {
+                const t = state.timetables[state.activeTableId];
+                const id = document.getElementById('lessonId').value;
+                if (id) {
+                    t.lessons = t.lessons.filter(l => l.id !== id);
+                    closeModal('lessonModal');
+                    saveState();
+                    renderAll();
+                    showToast("Lesson deleted.");
+                }
+            });
+        }
+
+        function addMinutes(timeStr, mins) {
+            const [h, m] = timeStr.split(':').map(Number);
+            const date = new Date();
+            date.setHours(h, m + mins, 0);
+            return String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
+        }
+
+        function generateTimeSlots(t) {
+            const slots = [];
+            let current = t.startTime || '08:00';
+            const duration = t.slotDuration || 60;
+            for (let i = 0; i < t.slotsCount; i++) {
+                const next = addMinutes(current, duration);
+                slots.push({ index: i, start: current, end: next });
+                current = next;
+            }
+            return slots;
+        }
+
+        function renderAll() {
+            const t = state.timetables[state.activeTableId];
+            if (!t) return;
+
+            const langDict = translations[state.lang];
+            document.documentElement.setAttribute('dir', ['ar', 'darija'].includes(state.lang) ? 'rtl' : 'ltr');
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (langDict[key]) el.textContent = langDict[key];
+            });
+
+            const selector = document.getElementById('timetableSelector');
+            selector.innerHTML = '';
+            Object.values(state.timetables).forEach(table => {
+                const opt = document.createElement('option');
+                opt.value = table.id;
+                opt.textContent = table.title;
+                if (table.id === state.activeTableId) opt.selected = true;
+                selector.appendChild(opt);
+            });
+
+            document.getElementById('liveTableTitle').textContent = t.title;
+
+            const btnVert = document.getElementById('viewModeVertical');
+            const btnHoriz = document.getElementById('viewModeHorizontal');
+            if (state.viewMode === 'vertical') {
+                btnVert.className = "px-3 py-1.5 rounded-lg bg-white dark:bg-zinc-800 shadow-xs transition-all";
+                btnHoriz.className = "px-3 py-1.5 rounded-lg text-zinc-600 dark:text-zinc-400 transition-all";
+            } else {
+                btnHoriz.className = "px-3 py-1.5 rounded-lg bg-white dark:bg-zinc-800 shadow-xs transition-all";
+                btnVert.className = "px-3 py-1.5 rounded-lg text-zinc-600 dark:text-zinc-400 transition-all";
+            }
+
+            renderTimetableGrid(t);
+            renderSubjectsDatalist();
+            renderSubjectsList();
+        }
+
+        function renderTimetableGrid(t) {
+            const wrapper = document.getElementById('timetableGridWrapper');
+            const langDict = translations[state.lang];
+            const daysNames = langDict.days.slice(0, t.daysCount);
+            const timeSlots = generateTimeSlots(t);
+
+            const skippedSlotsIndices = new Set();
+            t.exclusions.forEach(exc => {
+                if (exc.type === 'skip' && exc.days.length === t.daysCount) {
+                    skippedSlotsIndices.add(exc.slotIndex);
+                }
+            });
+
+            const activeSlots = timeSlots.filter(s => !skippedSlotsIndices.has(s.index));
+            let html = '';
+
+            if (state.viewMode === 'vertical') {
+                // Vertical View: Days in columns, Time slots in rows with RowSpan support
+                html += `<table class="w-full border-collapse text-left">`;
+                html += `<thead><tr class="bg-offwhite-200 dark:bg-zinc-900 border-b border-offwhite-300 dark:border-zinc-700 text-xs font-semibold text-zinc-500 uppercase">`;
+                html += `<th class="p-3 text-center border-r border-offwhite-300 dark:border-zinc-700 w-28">Time</th>`;
+                daysNames.forEach((day) => {
+                    html += `<th class="p-3 text-center border-r border-offwhite-300 dark:border-zinc-700">${day}</th>`;
+                });
+                html += `</tr></thead><tbody>`;
+
+                // Keep track of cells to skip due to multi-slot rowspan
+                // coveredCells[dIdx][slotIndex] = true if covered by a multi-slot lesson above
+                const coveredCells = {};
+                for (let d = 0; d < t.daysCount; d++) coveredCells[d] = {};
+
+                activeSlots.forEach((slot) => {
+                    html += `<tr class="border-b border-offwhite-200 dark:border-zinc-700/60 hover:bg-offwhite-50 dark:hover:bg-zinc-900/40 transition-colors">`;
+                    
+                    // Calculate composite time label if slot is spanned or normal
+                    html += `<td class="p-3 text-xs font-semibold text-center border-r border-offwhite-300 dark:border-zinc-700 text-zinc-500 whitespace-nowrap bg-offwhite-100/50 dark:bg-zinc-900/30">
+                        ${slot.start} → ${slot.end}
+                    </td>`;
+
+                    daysNames.forEach((day, dIdx) => {
+                        if (coveredCells[dIdx][slot.index]) {
+                            return; // Skip rendering cell because it's part of a rowspan above
+                        }
+
+                        const isDeleted = t.exclusions.some(exc => exc.type === 'delete' && exc.slotIndex === slot.index && exc.days.includes(dIdx));
+                        const lesson = t.lessons.find(l => l.dayIndex === dIdx && l.slotIndex === slot.index);
+                        const span = lesson ? (lesson.span || 1) : 1;
+
+                        if (isDeleted) {
+                            html += `<td class="p-3 border-r border-offwhite-300 dark:border-zinc-700 text-center deleted-period-pattern h-20 relative cursor-not-allowed">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-red-500 dark:text-red-400 bg-white/80 dark:bg-zinc-800/80 px-2 py-0.5 rounded-md">Break / Blocked</span>
+                            </td>`;
+                        } else if (lesson) {
+                            const sub = state.subjects.find(s => s.name.toLowerCase() === lesson.subject.toLowerCase());
+                            const bgColor = sub ? sub.color : '#c4b5fd';
+                            
+                            // Mark subsequent slots as covered
+                            for (let sOffset = 1; sOffset < span; sOffset++) {
+                                if (slot.index + sOffset < t.slotsCount) {
+                                    coveredCells[dIdx][slot.index + sOffset] = true;
+                                }
+                            }
+
+                            // Compute combined end time based on span
+                            const endSlotIdx = slot.index + span - 1;
+                            const actualEndTime = endSlotIdx < timeSlots.length ? timeSlots[endSlotIdx].end : slot.end;
+
+                            html += `<td rowspan="${span}" class="p-3 border-r border-offwhite-300 dark:border-zinc-700 relative group cursor-pointer align-top" style="background-color: ${bgColor}25;" onclick="openEditLessonModal('${lesson.id}')">
+                                <div class="flex flex-col h-full justify-between p-1 rounded-xl transition-transform hover:scale-[1.01]">
+                                    <div>
+                                        <div class="font-bold text-xs text-zinc-900 dark:text-zinc-100 flex items-center justify-between">
+                                            <span>${lesson.subject}</span>
+                                            <span class="text-[10px] font-medium opacity-75">${lesson.room || ''}</span>
+                                        </div>
+                                        ${lesson.teacher ? `<div class="text-[11px] text-zinc-600 dark:text-zinc-300 mt-0.5">${lesson.teacher}</div>` : ''}
+                                    </div>
+                                    <div class="text-[10px] font-semibold opacity-60 mt-2">${lesson.startTime} - ${actualEndTime} ${span > 1 ? `(${span} slots)` : ''}</div>
+                                </div>
+                            </td>`;
+                        } else {
+                            html += `<td class="p-3 border-r border-offwhite-300 dark:border-zinc-700 h-20 text-center cursor-pointer hover:bg-lavender-50/50 dark:hover:bg-zinc-700/30 transition-colors group" onclick="openAddLessonModal(${dIdx}, ${slot.index}, '${slot.start}', '${slot.end}')">
+                                <div class="w-full h-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-lavender-500">
+                                    <i class="fa-solid fa-plus text-xs"></i>
+                                </div>
+                            </td>`;
+                        }
+                    });
+                    html += `</tr>`;
+                });
+                html += `</tbody></table>`;
+
+            } else {
+                // Horizontal View: Time slots in columns, Days in rows with ColSpan support
+                html += `<table class="w-full border-collapse text-left">`;
+                html += `<thead><tr class="bg-offwhite-200 dark:bg-zinc-900 border-b border-offwhite-300 dark:border-zinc-700 text-xs font-semibold text-zinc-500 uppercase">`;
+                html += `<th class="p-3 text-center border-r border-offwhite-300 dark:border-zinc-700 w-28">Day / Slot</th>`;
+                activeSlots.forEach((slot) => {
+                    html += `<th class="p-3 text-center border-r border-offwhite-300 dark:border-zinc-700 whitespace-nowrap">${slot.start}<br><span class="text-[10px] opacity-75">↓ ${slot.end}</span></th>`;
+                });
+                html += `</tr></thead><tbody>`;
+
+                daysNames.forEach((day, dIdx) => {
+                    html += `<tr class="border-b border-offwhite-200 dark:border-zinc-700/60">`;
+                    html += `<td class="p-3 text-xs font-semibold border-r border-offwhite-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 bg-offwhite-100/50 dark:bg-zinc-900/30 whitespace-nowrap">${day}</td>`;
+
+                    const coveredSlots = {};
+
+                    activeSlots.forEach((slot) => {
+                        if (coveredSlots[slot.index]) return;
+
+                        const isDeleted = t.exclusions.some(exc => exc.type === 'delete' && exc.slotIndex === slot.index && exc.days.includes(dIdx));
+                        const lesson = t.lessons.find(l => l.dayIndex === dIdx && l.slotIndex === slot.index);
+                        const span = lesson ? (lesson.span || 1) : 1;
+
+                        if (isDeleted) {
+                            html += `<td class="p-3 border-r border-offwhite-300 dark:border-zinc-700 text-center deleted-period-pattern h-20 cursor-not-allowed"></td>`;
+                        } else if (lesson) {
+                            const sub = state.subjects.find(s => s.name.toLowerCase() === lesson.subject.toLowerCase());
+                            const bgColor = sub ? sub.color : '#c4b5fd';
+
+                            for (let sOffset = 1; sOffset < span; sOffset++) {
+                                if (slot.index + sOffset < t.slotsCount) {
+                                    coveredSlots[slot.index + sOffset] = true;
+                                }
+                            }
+
+                            html += `<td colspan="${span}" class="p-3 border-r border-offwhite-300 dark:border-zinc-700 h-20 relative group cursor-pointer" style="background-color: ${bgColor}25;" onclick="openEditLessonModal('${lesson.id}')">
+                                <div class="flex flex-col h-full justify-between p-1 rounded-xl">
+                                    <div class="font-bold text-xs text-zinc-900 dark:text-zinc-100">${lesson.subject}</div>
+                                    <div class="text-[10px] text-zinc-500">${lesson.room || ''}</div>
+                                </div>
+                            </td>`;
+                        } else {
+                            html += `<td class="p-3 border-r border-offwhite-300 dark:border-zinc-700 h-20 text-center cursor-pointer hover:bg-lavender-50/50 dark:hover:bg-zinc-700/30 transition-colors group" onclick="openAddLessonModal(${dIdx}, ${slot.index}, '${slot.start}', '${slot.end}')">
+                                <div class="w-full h-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-lavender-500">
+                                    <i class="fa-solid fa-plus text-xs"></i>
+                                </div>
+                            </td>`;
+                        }
+                    });
+                    html += `</tr>`;
+                });
+                html += `</tbody></table>`;
+            }
+
+            wrapper.innerHTML = html;
+        }
+
+        function renderSubjectsDatalist() {
+            const datalist = document.getElementById('subjectsDatalist');
+            datalist.innerHTML = '';
+            state.subjects.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s.name;
+                datalist.appendChild(opt);
+            });
+        }
+
+        function renderSubjectsList() {
+            const container = document.getElementById('subjectsListContainer');
+            container.innerHTML = '';
+            state.subjects.forEach((s, idx) => {
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between p-2.5 rounded-xl bg-offwhite-100 dark:bg-zinc-900 border border-offwhite-300 dark:border-zinc-700";
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="w-5 h-5 rounded-lg border border-zinc-300 dark:border-zinc-700 shadow-xs" style="background-color: ${s.color};"></span>
+                        <span class="text-xs font-semibold text-zinc-800 dark:text-zinc-200">${s.name}</span>
+                    </div>
+                    <button onclick="deleteSubject(${idx})" class="text-zinc-400 hover:text-red-500 transition-colors text-xs p-1"><i class="fa-solid fa-trash"></i></button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        window.deleteSubject = function(idx) {
+            state.subjects.splice(idx, 1);
+            saveState();
+            renderAll();
+        };
+
+        window.openModal = function(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+        };
+
+        window.closeModal = function(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        };
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                ['lessonModal', 'subjectsModal', 'settingsModal', 'excludedModal'].forEach(id => closeModal(id));
+            }
+        });
+
+        document.querySelectorAll('.fixed.inset-0').forEach(modalBg => {
+            modalBg.addEventListener('click', (e) => {
+                if (e.target === modalBg) {
+                    modalBg.classList.add('hidden');
+                }
+            });
+        });
+
+        window.openAddLessonModal = function(dayIndex, slotIndex, startTime, endTime) {
+            document.getElementById('lessonModalTitle').textContent = translations[state.lang].addLesson;
+            document.getElementById('lessonId').value = '';
+            document.getElementById('lessonDay').value = dayIndex;
+            document.getElementById('lessonTimeSlotIndex').value = slotIndex;
+            document.getElementById('lessonSubject').value = '';
+            document.getElementById('lessonStartTime').value = startTime;
+            document.getElementById('lessonEndTime').value = endTime;
+            document.getElementById('lessonSlotSpan').value = '1';
+            document.getElementById('lessonTeacher').value = '';
+            document.getElementById('lessonRoom').value = '';
+            document.getElementById('deleteLessonBtn').classList.add('hidden');
+            openModal('lessonModal');
+        };
+
+        window.openEditLessonModal = function(lessonId) {
+            const t = state.timetables[state.activeTableId];
+            const l = t.lessons.find(item => item.id === lessonId);
+            if (!l) return;
+
+            document.getElementById('lessonModalTitle').textContent = "Edit Lesson";
+            document.getElementById('lessonId').value = l.id;
+            document.getElementById('lessonDay').value = l.dayIndex;
+            document.getElementById('lessonTimeSlotIndex').value = l.slotIndex;
+            document.getElementById('lessonSubject').value = l.subject;
+            document.getElementById('lessonStartTime').value = l.startTime;
+            document.getElementById('lessonEndTime').value = l.endTime;
+            document.getElementById('lessonSlotSpan').value = l.span || 1;
+            document.getElementById('lessonTeacher').value = l.teacher || '';
+            document.getElementById('lessonRoom').value = l.room || '';
+            document.getElementById('deleteLessonBtn').classList.remove('hidden');
+            openModal('lessonModal');
+        };
+
+        function populateSettingsForm() {
+            const t = state.timetables[state.activeTableId];
+            document.getElementById('settingTitleInput').value = t.title;
+            document.getElementById('settingDaysCount').value = t.daysCount;
+            document.getElementById('settingSlotsCount').value = t.slotsCount;
+            document.getElementById('settingStartTime').value = t.startTime;
+            document.getElementById('settingSlotDuration').value = t.slotDuration;
+        }
+
+        function populateExcludedModal() {
+            const t = state.timetables[state.activeTableId];
+            const langDict = translations[state.lang];
+            
+            const slotSelect = document.getElementById('excludeSlotIndex');
+            slotSelect.innerHTML = '';
+            const slots = generateTimeSlots(t);
+            slots.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s.index;
+                opt.textContent = `Slot ${s.index + 1} (${s.start} - ${s.end})`;
+                slotSelect.appendChild(opt);
+            });
+
+            const daysContainer = document.getElementById('excludeDaysCheckboxes');
+            daysContainer.innerHTML = '';
+            const daysNames = langDict.days.slice(0, t.daysCount);
+            daysNames.forEach((dName, dIdx) => {
+                const label = document.createElement('label');
+                label.className = "flex items-center gap-2 text-xs font-medium bg-white dark:bg-zinc-800 px-3 py-1.5 rounded-xl border border-offwhite-300 dark:border-zinc-700 cursor-pointer";
+                label.innerHTML = `<input type="checkbox" value="${dIdx}" class="exclude-day-cb rounded accent-lavender-600" checked> ${dName}`;
+                daysContainer.appendChild(label);
+            });
+
+            const activeContainer = document.getElementById('exclusionsListContainer');
+            activeContainer.innerHTML = '';
+            if (t.exclusions.length === 0) {
+                activeContainer.innerHTML = `<p class="text-xs text-zinc-400 italic">No active restrictions.</p>`;
+            } else {
+                t.exclusions.forEach((exc, idx) => {
+                    const div = document.createElement('div');
+                    div.className = "flex items-center justify-between p-2.5 rounded-xl bg-offwhite-100 dark:bg-zinc-900 border border-offwhite-300 dark:border-zinc-700 text-xs";
+                    const daysStr = exc.days.map(d => daysNames[d]).join(', ');
+                    div.innerHTML = `
+                        <div>
+                            <span class="font-bold uppercase text-[10px] px-2 py-0.5 rounded-md ${exc.type === 'delete' ? 'bg-red-100 text-red-700 dark:bg-red-950/60 dark:text-red-300' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-950/60 dark:text-yellow-300'}">${exc.type}</span>
+                            <span class="ml-2 font-medium">Slot ${exc.slotIndex + 1} (${daysStr})</span>
+                        </div>
+                        <button onclick="removeExclusion(${idx})" class="text-zinc-400 hover:text-red-500 transition-colors p-1"><i class="fa-solid fa-xmark"></i></button>
+                    `;
+                    activeContainer.appendChild(div);
+                });
+            }
+        }
+
+        window.removeExclusion = function(idx) {
+            const t = state.timetables[state.activeTableId];
+            t.exclusions.splice(idx, 1);
+            saveState();
+            populateExcludedModal();
+            renderAll();
+            showToast(translations[state.lang].toastDeleted);
+        };
+
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 text-xs font-semibold px-4 py-3 rounded-2xl shadow-xl transition-all duration-300 pointer-events-auto flex items-center gap-2 translate-y-2 opacity-0";
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-lavender-400"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
 </body>
 </html>
